@@ -43,7 +43,14 @@ module.exports = function (app) {
     // [authJwt.verifyToken, authJwt.isTutor],
     controller.update_create_exam_choices);
 
+
+    app.delete("/api/exam/deleteExam/:exam_id",
+    // [authJwt.verifyToken, authJwt.isTutor],
+    controller.delete_exam);
+
     
+
+
 
 
     

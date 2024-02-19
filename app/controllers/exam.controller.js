@@ -396,6 +396,135 @@ exports.update_create_exam_choices = async (req, res) => {
 
 
 
+exports.delete_exam = async (req, res) => {
+     try {
+        const exam_id =parseInt(req.params.exam_id);
+
+        if(!exam_id){
+            return res.status(400).send({
+                message: "Exam ID is required!",
+                code: 400
+            });
+        }
+
+        const existingExam = await prisma.course_exam.findFirst({
+            where: {
+                exam_id: exam_id
+            }
+        });
+
+        if (!existingExam) {
+            return res.status(404).send({
+                message: "Exam is not found!",
+                code: 404
+            });
+        }
+
+        const deleteExam = await prisma.course_exam.delete({
+            where: {
+                exam_id: exam_id
+            }
+        });
+
+        res.status(200).send({
+            message: "Exam was deleted successfully!",
+            code: 200
+        });
+     }catch (err) {
+        res.status(500).send({
+            message: err.message,
+            code: 500
+        });
+    }
+}
+
+exports.delete_exam_question = async (req, res) => {
+    try {
+        const problem_id = parseInt(req.params.problem_id);
+
+        if(!problem_id){
+            return res.status(400).send({
+                message: "Problem ID is required!",
+                code: 400
+            });
+        }
+
+        const existingProblem = await prisma.course_exam_problem.findFirst({
+            where: {
+                problem_id: problem_id
+            }
+        });
+
+        if (!existingProblem) {
+            return res.status(404).send({
+                message: "Problem is not found!",
+                code: 404
+            });
+        }
+
+        const deleteProblem = await prisma.course_exam_problem.delete({
+            where: {
+                problem_id: problem_id
+            }
+        });
+
+        res.status(200).send({
+            message: "Problem was deleted successfully!",
+            code: 200
+        });
+    }catch (err) {
+        res.status(500).send({
+            message: err.message,
+            code: 500
+        });
+    }
+}
+
+exports.delete_exam_choices = async (req, res) => {
+    try {
+        const choices_id = parseInt(req.params.choices_id);
+
+        if(!choices_id){
+            return res.status(400).send({
+                message: "Choice ID is required!",
+                code: 400
+            });
+        }
+
+        const existingChoice = await prisma.course_exam_choices.findFirst({
+            where: {
+                choices_id: choices_id
+            }
+        });
+
+        if (!existingChoice) {
+            return res.status(404).send({
+                message: "Choice is not found!",
+                code: 404
+            });
+        }
+
+        const deleteChoice = await prisma.course_exam_choices.delete({
+            where: {
+                choices_id: choices_id
+            }
+        });
+
+        res.status(200).send({
+            message: "Choice was deleted successfully!",
+            code: 200
+        });
+    }catch (err) {
+        res.status(500).send({
+            message: err.message,
+            code: 500
+        });
+    }
+}
+
+
+
+
 
 
 
