@@ -62,9 +62,9 @@ exports.course_lesson = async (req, res) => {
         });
 
         if (!existingCourse) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Course is not found!",
-                code: 400
+                code: 404
             });
         }
         const createLesson = await prisma.course_lesson.create({
@@ -99,9 +99,9 @@ exports.course_lesson_content = async (req, res) => {
             }
         });
         if (!existingLesson) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Lesson is not found!",
-                code: 400
+                code: 404
             });
         }
         const createContent = await prisma.lesson_chapter.create({
@@ -142,9 +142,9 @@ exports.get_course = async (req, res) => {
         });
         
         if(!course){
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Course is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -173,9 +173,9 @@ exports.update_course = async (req, res) => {
             });
         
             if (!existingCourse) {
-                return res.status(400).send({
+                return res.status(404).send({
                     message: "Course is not found!",
-                    code: 400
+                    code: 404
                 });
             }
 
@@ -214,9 +214,9 @@ exports.update_lesson = async (req, res) => {
         });
 
         if (!existingLesson) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Lesson is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -255,9 +255,9 @@ exports.update_content = async (req, res) => {
         });
 
         if (!existingContent) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Content is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -299,9 +299,9 @@ const existingLesson = await prisma.course_lesson.findFirst({
 
   
     if (!existingLesson) {
-        return res.status(400).send({
+        return res.status(404).send({
             message: "Lesson is not found!",
-            code: 400
+            code: 404
         });
     }
 
@@ -337,9 +337,9 @@ exports.delete_content  = async (req, res) => {
         });
 
         if (!existingContent) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Content is not found!",
-                code: 400
+                code: 404
             });
         }
         const deleteContent = await prisma.lesson_chapter.delete({
@@ -386,9 +386,9 @@ exports.get_course_by_id = async (req, res) => {
         });
         
         if(!course){
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Course is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -425,9 +425,9 @@ exports.get_course_by_id = async (req, res) => {
         });
         
         if(!course){
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Course is not found!",
-                code: 400
+                code: 404
             });
         }
 
