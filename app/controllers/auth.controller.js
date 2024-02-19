@@ -82,9 +82,9 @@ exports.register = async (req, res) => {
             }
         })
         if (checkUsername) {
-            return res.status(400).send({ 
+            return res.status(403).send({ 
                 message: "Username is already in use!",
-                code : 400
+                code : 403
              });
         }
         const createUser = await prisma.users_account.create({

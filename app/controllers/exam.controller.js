@@ -22,9 +22,9 @@ exports.get_course_exam = async (req, res) => {
         });
 
         if (!existingCourse) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Course is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -66,9 +66,9 @@ exports.get_exam_question_choice_by_exam = async (req, res) => {
         });
 
         if (!existingExam) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Exam is not found!",
-                code: 400
+                code: 404
             });
         }
         const examQuestion = await prisma.course_exam_problem.findMany({
@@ -112,9 +112,9 @@ exports.create_course_exam = async (req, res) => {
         });
 
         if (!existingCourse) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Course is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -125,9 +125,9 @@ exports.create_course_exam = async (req, res) => {
         });
 
         if (existingExam) {
-            return res.status(400).send({
+            return res.status(403).send({
                 message: "Exam with the same name already exists!",
-                code: 400
+                code: 403
             });
         }
 
@@ -172,9 +172,9 @@ exports.create_exam_question = async (req, res) => {
         });
 
         if (!existingExam) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Exam is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -220,9 +220,9 @@ exports.create_exam_choices = async (req, res) => {
         });
 
         if (!existingProblem) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Problem is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -266,9 +266,9 @@ exports.update_create_course_exam = async (req, res) => {
         });
 
         if (!existingExam) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Exam is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -315,9 +315,9 @@ exports.update_create_exam_question = async (req, res) => {
         });
 
         if (!existingProblem) {
-            return res.status(400).send({
+            return res.status(404).send({
                 message: "Problem is not found!",
-                code: 400
+                code: 404
             });
         }
 
@@ -345,6 +345,54 @@ exports.update_create_exam_question = async (req, res) => {
     }
 }
 
+
+exports.update_create_exam_choices = async (req, res) => {
+ try {
+      const choices_id = req.body.choices_id;
+        const label = req.body.label;
+
+        if(!choices_id || !label){
+            return res.status(400).send({
+                message: "Choice ID and label are required!",
+                code: 400
+            });
+        }
+    
+        const existingChoice = await prisma.course_exam_choices.findFirst({
+            where: {
+                choices_id: choices_id
+            }
+        });
+
+        if (!existingChoice) {
+            return res.status(400).send({
+                message: "Choice is not found!",
+                code: 400
+            });
+        }   
+
+        const updateChoice = await prisma.course_exam_choices.update({
+            where: {
+                choices_id: choices_id
+            },
+            data: {
+                label: label
+            }
+        });
+
+        res.status(200).send({
+            message: "Choice was updated successfully!",
+            code: 200
+        });
+
+    }
+    catch (err) {
+        res.status(500).send({
+            message: err.message,
+            code: 500
+        });
+    }
+}
 
 
 

@@ -21,9 +21,9 @@ exports.create = async (req, res) => {
         });
 
         if (existingCourse) {
-            return res.status(400).send({
+            return res.status(403).send({
                 message: "Course with the same name already exists!",
-                code: 400
+                code: 403
             });
         }
     
