@@ -55,6 +55,14 @@ exports.course_lesson = async (req, res) => {
         const lesson_name = req.body.lesson_name;
         const course_id = req.body.course_id;
 
+        if (!lesson_name || !course_id) {
+            return res.status(400).send({
+                message: "Lesson Name and Course ID are required!",
+                code: 400
+            });
+        }
+
+
         const existingCourse = await prisma.course.findFirst({
             where: {
                 course_id: course_id
@@ -92,6 +100,14 @@ exports.course_lesson_content = async (req, res) => {
         const lesson_id = req.body.lesson_id;
         const content_data = req.body.content_data;
         const content_type = req.body.content_type;
+
+        if (!lesson_id || !content_data || !content_type) {
+            return res.status(400).send({
+                message: "Lesson ID, Content Data, and Content Type are required!",
+                code: 400
+            });
+        }
+
 
         const existingLesson = await prisma.course_lesson.findFirst({
             where: {
@@ -165,6 +181,12 @@ exports.update_course = async (req, res) => {
             const course_description = req.body.course_description;
             const course_visibility = req.body.course_visibility;
 
+            if (!course_id || !course_name || !course_description || !course_visibility) {
+                return res.status(400).send({
+                    message: "Course ID, Course Name, Course Description, and Course Visibility are required!",
+                    code: 400
+                });
+            }
 
             const existingCourse = await prisma.course.findFirst({
                 where: {
@@ -207,6 +229,14 @@ exports.update_lesson = async (req, res) => {
         const lesson_id = req.body.lesson_id;
         const lesson_name = req.body.lesson_name;
 
+        if (!lesson_id || !lesson_name) {
+            return res.status(400).send({
+                message: "Lesson ID and Lesson Name are required!",
+                code: 400
+            });
+        }
+
+
         const existingLesson = await prisma.course_lesson.findFirst({
             where: {
                 lesson_id: lesson_id
@@ -247,6 +277,15 @@ exports.update_content = async (req, res) => {
         const lesson_chapter_id = req.body.lesson_chapter_id;
         const content_data = req.body.content_data;
         const content_type = req.body.content_type;
+
+
+        if (!lesson_chapter_id || !content_data || !content_type) {
+            return res.status(400).send({
+                message: "Lesson Chapter ID, Content Data, and Content Type are required!",
+                code: 400
+            });
+        }
+        
 
         const existingContent = await prisma.lesson_chapter.findFirst({
             where: {
