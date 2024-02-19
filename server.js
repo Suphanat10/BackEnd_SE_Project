@@ -25,4 +25,5 @@ require("./app/routes/auth.routes")(app);
 require("./app/routes/course.routes")(app);
 require("./app/routes/exam.routes")(app);
 require("./app/routes/profile.routes")(app);
+require("./app/routes/users.routes")(app);
 
