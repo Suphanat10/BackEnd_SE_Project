@@ -42,6 +42,7 @@ exports.login = async (req, res) => {
             id: user.user_id,
             name: user.prefix + " " + user.first_name + " " + user.last_name,
             email: user.email,
+            gender: user.gender, 
             permission : user.permission_id,
             accessToken: token
         });
@@ -55,6 +56,13 @@ exports.login = async (req, res) => {
 
    
 };
+
+exports.login_google = async (req, res) => {
+     
+    
+}
+
+
 
 exports.register = async (req, res) => {
     try {

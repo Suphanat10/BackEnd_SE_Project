@@ -19,7 +19,7 @@ module.exports = function (app) {
 
 
     app.post("/api/course/createLesson", 
-    [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+    // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
     controller.course_lesson);
 
     app.post("/api/course/createContent",
@@ -31,21 +31,21 @@ module.exports = function (app) {
   
 
   app.put("/api/course/updateCourse", 
-  [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
   controller.update_course);
 
   app.put("/api/course/updateLesson",
-  [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
    controller.update_lesson);
 
   app.put("/api/course/updateContent", 
-  [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
   controller.update_content);
 
 
 
   app.delete("/api/course/delete/course_lesson/:id",
-  [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
    controller.delete_course_lesson);
 
 

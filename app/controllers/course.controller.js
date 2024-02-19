@@ -32,7 +32,7 @@ exports.create = async (req, res) => {
                 course_name: course_name,
                 course_description: course_description,
                 course_visibility: course_visibility,
-                instructor_fk: instructor,
+                instructor: instructor,
             }
 
         });

@@ -21,6 +21,15 @@ module.exports = function (app) {
     // [authJwt.verifyToken, authJwt.isTutor],
 
     controller.create_exam_question);
+
+    app.post("/api/exam/createChoice",
+    // [authJwt.verifyToken, authJwt.isTutor],
+    controller.create_exam_choices);
+
+
+    app.get("/api/exam/getExam/by_course/:course_id", controller.get_course_exam);
+    app.get("/api/exam/getExam/:exam_id", controller.get_exam_question_choice_by_exam);
+
     
 
 
