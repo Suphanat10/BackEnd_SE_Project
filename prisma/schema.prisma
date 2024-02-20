@@ -13,6 +13,7 @@ model course {
   course_description String?         @db.Text
   course_visibility  Boolean?
   instructor         Int?
+  image              String?         @db.VarChar(255)
   users_account      users_account?  @relation(fields: [instructor], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "course_ibfk_1")
   course_exam        course_exam[]
   course_lesson      course_lesson[]
@@ -67,7 +68,7 @@ model course_reg {
   registration_id     Int            @id @default(autoincrement())
   course_id           Int?
   user_id             Int?
-  registration_status String?        @db.VarChar(20)
+  registration_status Int?
   transfer_document   String?        @db.VarChar(255)
   completion_status   String?        @db.VarChar(20)
   course              course?        @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction, map: "course_reg_ibfk_1")
@@ -121,6 +122,7 @@ model users_account {
   permission_id Int?
   gender        String?      @db.VarChar(10)
   image         String?      @db.VarChar(255)
+  google_id     String?      @db.VarChar(255)
   course        course[]
   course_reg    course_reg[]
 }
