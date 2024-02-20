@@ -1,4 +1,4 @@
-const controller = require("../controllers/users.controller");
+const controller = require("../controllers/score.controller");
 const { authJwt } = require("../middleware");
 
 
@@ -13,12 +13,17 @@ module.exports = function (app) {
   });
 
 
-app.get("/api/users/all",  controller.usersAll);
-app.get("/api/users/id/:user_id", controller.get_userById);
+    // app.post("/api/profile/updatePassword", 
+    // // [authJwt.verifyToken],
+    // controller.updatePassword);
 
 
 
-  
-  
+
+
+
+
+
+
 
 };

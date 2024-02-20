@@ -4,6 +4,46 @@ var bcrypt = require("bcryptjs");
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
+
+
+exports.login_bygoogle = async (req, res) => {
+    try {
+        const google_id = req.body.google_id;
+
+        const user = await prisma.users_account.findUnique({
+            where: {
+                google_id: google_id
+            }
+        })
+
+        if (!user) {
+            return res.status(404).send({
+                message: "User Not found.",
+                code: 404
+            });
+        }
+
+        var token = jwt.sign({ id: user.user_id }, config.secret, {
+            expiresIn: 86400
+        });
+
+        res.status(200).send({
+            id: user.user_id,
+            name: user.prefix + " " + user.first_name + " " + user.last_name,
+            email: user.email,
+            gender: user.gender, 
+            permission : user.permission_id,
+            accessToken: token
+        });
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "Some error occurred while login the User.",
+            code: 500
+        });
+    }
+}
+
 exports.login = async (req, res) => {
     try{
         const username = req.body.username;
@@ -57,43 +97,78 @@ exports.login = async (req, res) => {
    
 };
 
-exports.login_google = async (req, res) => {
-     
-    
-}
-
 
 
 exports.register = async (req, res) => {
     try {
-        const user = {
-            username: req.body.username,
-            gender : req.body.gender,
-            password: bcrypt.hashSync(req.body.password, 8),
-            prefix: req.body.prefix,
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: req.body.email,
-            permission_id: req.body.permission_id
+        const password = req.body.password;
+        const username = req.body.username;
+        const confirm_password = req.body.confirm_password;
+        const prefix = req.body.prefix;
+        const first_name = req.body.first_name;
+        const last_name = req.body.last_name;
+        const email = req.body.email;
+        const gender = req.body.gender;
+        const permission_id = req.body.permission_id;
+
+       
+
+        if (!password || !username || !confirm_password || !prefix || !first_name || !last_name || !email || !permission_id ||!gender)  {
+            return res.status(403).send({
+                message: "All field is required!",
+                code : 403
+            });
         }
+
+        if (password !== confirm_password) {
+            return res.status(403).send({ 
+                message: "Password and Confirm Password are not match!",
+                code : 403
+             });
+        }
+        
         const checkUsername = await prisma.users_account.findUnique({
             where: {
-                username: user.username
+                username: username,
             }
         })
+
         if (checkUsername) {
             return res.status(403).send({ 
                 message: "Username is already in use!",
                 code : 403
+
              });
         }
+
         const createUser = await prisma.users_account.create({
-            data: user
+            data: {
+                prefix: prefix,
+                first_name: first_name,
+                last_name: last_name,
+                email: email,
+                username: username,
+                password: bcrypt.hashSync(password, 8),
+                permission_id: permission_id,
+                gender:gender
+
+            }
         })
-        res.status(200).send({ 
+
+        var token = jwt.sign({ id: createUser.user_id }, config.secret, {
+            expiresIn: 86400 
+        });
+
+          res.status(200).send({ 
             message: "User was registered successfully!",
-            code : 200
+            id: createUser.user_id,
+            name: createUser.prefix + " " + createUser.first_name + " " + createUser.last_name,
+            email: createUser.email,
+            gender: createUser.gender, 
+            permission : createUser.permission_id,
+            accessToken: token
             });
+
     }
     catch (err) {
         res.status(500).send({ 
@@ -101,12 +176,4 @@ exports.register = async (req, res) => {
             code : 500
          });
     }
-
-
 };
-
-
-
-
-
-

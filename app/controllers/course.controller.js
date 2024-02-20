@@ -143,25 +143,29 @@ exports.course_lesson_content = async (req, res) => {
 exports.get_course = async (req, res) => {
     try {
         const course = await prisma.course.findMany({
-            select: {
-                course_id: true,
-                course_name: true,
-                course_description: true,
-                course_visibility: true,
+            include: {
                 course_lesson: {
                     select: {
-                        lesson_name : true,
-                        lesson_id : true,
+                        lesson_name: true,
+                    }
+                },
+                users_account: {
+                    select: {
+                        prefix: true,
+                        first_name: true,
+                        last_name: true,
+
                     }
                 }
             }
         });
         
+
+    
+        
         if(!course){
-            return res.status(404).send({
-                message: "Course is not found!",
-                code: 404
-            });
+            return res.status(404).send([]);
+
         }
 
         res.status(200).send(course);
@@ -334,9 +338,8 @@ const existingLesson = await prisma.course_lesson.findFirst({
     where: {
         lesson_id: lesson_id 
     }
-});
+    });
 
-  
     if (!existingLesson) {
         return res.status(404).send({
             message: "Lesson is not found!",
@@ -482,4 +485,176 @@ exports.get_course_by_id = async (req, res) => {
 
 
 
+exports.regis_course = async (req, res) => {
+    try {
+        const course_id = req.body.course_id
+        const user_id = req.body.user_id
+         console.log(course_id);
+         console.log(user_id);
+
+        if (!course_id || !user_id) {   
+            return res.status(400).send({
+                message: "Course ID and User ID are required!",
+                code: 400
+            });
+        }
+
+        const check_users_account = await prisma.users_account.findFirst({
+            where: {
+                user_id: user_id
+            }
+        });
+
+        console.log(check_users_account);
+
+        if (!check_users_account) {
+            return res.status(404).send({
+                message: "User is not found!",
+                code: 404
+            });
+        }
+        
+        if(check_users_account.permission_id == 2 || check_users_account.permission_id == 3){
+            return res.status(403).send({
+                message: "You are not allowed to register this course!",
+                code: 403
+            });
+        }
+
+        const checkcourse = await prisma.course.findFirst({
+            where: {
+                course_id: course_id
+            }
+        });
+        console.log(checkcourse);
+
+        if (!checkcourse) {
+            return res.status(404).send({
+                message: "Course is not found!",
+                code: 404
+            });
+        }
+
+        console.log(checkcourse.course_visibility);
+
+        if(checkcourse.course_visibility == false){
+            const createCoursefree = await prisma.course_reg.create({
+                data:{
+                    course_id:course_id,
+                    user_id:user_id,
+                    registration_status:1,
+                    completion_status:1
+                }
+            })
+            return res.status(200).send({
+                message: "Course was registered successfully!",
+                code: 200
+            });
+
+        }else{
+            const createCourse = await prisma.course_reg.create({
+                data:{
+                    course_id:course_id,
+                    user_id:user_id,
+                    registration_status:1,
+                    completion_status:0
+                }
+            })
+            return res.status(200).send({
+                message: "Course was registered successfully!",
+                code: 200
+            });
+
+      
+         
+
+        }
+    } catch (error) {
+        res.status(500).send({
+            message: error.message,
+            code: 500
+        });
+    }
+}
+
+exports.get_course_by_instructor = async (req, res) => {
+    try{  
+        const user_id = req.user_id;
+        
+
+        const users = await prisma.users_account.findFirst({
+            where:{
+                user_id:user_id
+            }
+        });
+
+        if(users.permission_id == 1){
+            const course = await prisma.course.findFirst({
+            where: {
+                instructor: user_id
+            },
+            select: {
+                course_id: true,
+                course_name: true,
+                course_description: true,
+                course_visibility: true,
+                course_lesson: {
+                    select: {
+                        lesson_name : true,
+                        lesson_id : true,
+                    }
+                }
+            }
+        });
+
+        if(!course){
+            return res.status(200).send([]);
+        }
+        res.status(200).send(course);
+
+        }else if(users.permission_id == 2){
+            const course = await prisma.course.findMany({
+                where: {
+                    instructor: user_id
+                },
+                select: {
+                    course_id: true,
+                    course_name: true,
+                    course_description: true,
+                    course_visibility: true,
+                    course_lesson: {
+                        select: {
+                            lesson_name : true,
+                            lesson_id : true,
+                        }
+                    },
+                    users_account: {
+                        select: {
+                            prefix: true,
+                            first_name: true,
+                            last_name: true,
+                        }
+                    }
+                
+                }
+            });
+
+            if(!course){
+                return res.status(200).send([]);
+            }
+            res.status(200).send(course);
+        }else{
+            return res.status(200).send([]); 
+        }
+    }
+    catch (err) {
+        res.status(500).send({
+            message: err.message,
+            code: 500
+        });
+    }
+}
+
    
+
+

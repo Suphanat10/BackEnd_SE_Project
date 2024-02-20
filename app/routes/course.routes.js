@@ -54,10 +54,17 @@ module.exports = function (app) {
    controller.delete_content);
 
 
+  app.post("/api/course/registerCourse",
+  // [authJwt.verifyToken, authJwt.isStudent],
+    controller.regis_course);
 
 
-    
 
+
+  app.get("/api/course/mycourse",
+ [ authJwt.verifyToken],
+
+    controller.get_course_by_instructor);
 
 
 };
