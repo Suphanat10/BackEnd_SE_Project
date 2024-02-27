@@ -159,10 +159,6 @@ exports.get_course = async (req, res) => {
                 }
             }
         });
-        
-
-    
-        
         if(!course){
             return res.status(404).send([]);
 
@@ -177,6 +173,10 @@ exports.get_course = async (req, res) => {
         });
     }
 }
+
+
+
+
 
 exports.update_course = async (req, res) => {
     try{
@@ -489,8 +489,7 @@ exports.regis_course = async (req, res) => {
     try {
         const course_id = req.body.course_id
         const user_id = req.body.user_id
-         console.log(course_id);
-         console.log(user_id);
+         
 
         if (!course_id || !user_id) {   
             return res.status(400).send({
@@ -504,8 +503,6 @@ exports.regis_course = async (req, res) => {
                 user_id: user_id
             }
         });
-
-        console.log(check_users_account);
 
         if (!check_users_account) {
             return res.status(404).send({
@@ -526,7 +523,7 @@ exports.regis_course = async (req, res) => {
                 course_id: course_id
             }
         });
-        console.log(checkcourse);
+    
 
         if (!checkcourse) {
             return res.status(404).send({
@@ -535,8 +532,20 @@ exports.regis_course = async (req, res) => {
             });
         }
 
-        console.log(checkcourse.course_visibility);
+        const checkcourse_reg = await prisma.course_reg.findFirst({
+            where: {
+                course_id: course_id,
+                user_id: user_id
+            }
+        });
 
+        if (checkcourse_reg) {
+            return res.status(403).send({
+                message: "You have already registered this course!",
+                code: 403
+            });
+        }
+    
         if(checkcourse.course_visibility == false){
             const createCoursefree = await prisma.course_reg.create({
                 data:{
@@ -548,6 +557,7 @@ exports.regis_course = async (req, res) => {
             })
             return res.status(200).send({
                 message: "Course was registered successfully!",
+                status_registration :true,
                 code: 200
             });
 
@@ -562,6 +572,7 @@ exports.regis_course = async (req, res) => {
             })
             return res.status(200).send({
                 message: "Course was registered successfully!",
+                status_registration :false,
                 code: 200
             });
 
