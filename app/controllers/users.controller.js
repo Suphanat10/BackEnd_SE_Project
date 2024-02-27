@@ -2,124 +2,67 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 
-exports.usersAll = async (req, res) => {
-    try {
-        const users = await prisma.users_account.findMany({
+exports.get_user_registration = async (req, res) => {
+    try{
+        const course_id = parseInt(req.params.id);
+        
+        if(!course_id){
+            res.status(400).send({
+                message: "Course ID is required"
+            });
+            return;
+        }
+
+        const user_reg = await prisma.course_reg.findMany({
             select: {
-                user_id: true,
-                email: true,
-                first_name: true,
-                last_name: true,
-                gender: true,
-                image: true,
+              course_id: true,
+              course: { 
+                select: {
+                  course_name: true
+                }
+              },
+              users_account: {
+                select: {
+                  prefix: true,
+                  first_name: true,
+                  last_name: true,
+                }
+              }
             },
             where: {
-                permission_id: 1
+              course_id: course_id
             }
-        });
-
-        if(users.length === 0) {
-            return res.status(404).json({ 
-                message: "No user found.",
-                code : 404
-             });
-        }
+          });
         
-        res.status(200).json(users);
     }
     catch (error) {
-        res.status(500).json({ 
-            message: error.message ,
-            code: 500
+        res.status(500).send({
+            message: error.message || "Some error occurred while retrieving user registration."
         });
     }
 }
-
-
-exports.get_userById = async (req, res) => {
-    try {
-        const user_id = parseInt(req.params.user_id);
     
 
-        if (!user_id) {
-            return res.status(400).json({
-                message: "User id is required.",
-                code: 400
-            });
-        }
+                
 
-        const users = await prisma.users_account.findMany({
-            select: {
-                user_id: true,
-                email: true,
-                first_name: true,
-                last_name: true,
-                gender: true,
-                image: true,
-            },
-            where: {
-                user_id: user_id
-            }
-        });
+            
 
-        if (!users || users.length === 0) {
-            return res.status(404).json({
-                message: "No user found.",
-                code: 404
-            });
-        }
-        res.status(200).json(users);
-    }
-    catch (error) {
-        res.status(500).json({
-            message: error.message,
-            code: 500
-        });
-    }
-}
 
-exports.get_userBycourse_id = async (req, res) => {
-    try {
-        const course_id = parseInt(req.params.course_id);
+
+
+      
+
+       
+   
+
+
+
+
         
 
-        if (!course_id) {
-            return res.status(400).json({
-                message: "Course id is required.",
-                code: 400
-            });
-        }
 
-        const users = await prisma.users_account.findMany({
-            select: {
-                user_id: true,
-                email: true,
-                first_name: true,
-                last_name: true,
-                gender: true,
-                image: true,
-            },
-            where: {
-                user_id: user_id
-            }
-        });
 
-        if (!users || users.length === 0) {
-            return res.status(404).json({
-                message: "No user found.",
-                code: 404
-            });
-        }
-
-        res.status(200).json(users);
-    }
-    catch (error) {
-        res.status(500).json({
-            message: error.message,
-            code: 500
-        });
-    }
-}
+   
 
 
 

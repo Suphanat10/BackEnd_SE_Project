@@ -28,4 +28,5 @@ require("./app/routes/profile.routes")(app);
 require("./app/routes/users.routes")(app);
 require("./app/routes/score.routes")(app);
 require("./app/routes/payment.routes")(app);
+// require("./app/routes/upimg.routes")(app);
 

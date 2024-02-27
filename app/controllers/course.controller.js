@@ -4,7 +4,9 @@ const prisma = new PrismaClient();
 
 exports.create = async (req, res) => {
     try {
-        const { course_name, course_description, course_visibility,  instructor } = req.body;
+        const { course_name, course_description, course_visibility, cost} = req.body;
+        const instructor = req.user_id;
+
         
         if(!course_name || !course_description || !course_visibility || !instructor){
             return res.status(400).send({
@@ -33,6 +35,7 @@ exports.create = async (req, res) => {
                 course_description: course_description,
                 course_visibility: course_visibility,
                 instructor: instructor,
+                cost: cost
             }
 
         });
@@ -154,7 +157,7 @@ exports.get_course = async (req, res) => {
                         prefix: true,
                         first_name: true,
                         last_name: true,
-
+ß
                     }
                 }
             }
@@ -588,7 +591,7 @@ exports.regis_course = async (req, res) => {
     }
 }
 
-exports.get_course_by_instructor = async (req, res) => {
+exports.get_mycourse = async (req, res) => {
     try{  
         const user_id = req.user_id;
         
@@ -665,7 +668,3 @@ exports.get_course_by_instructor = async (req, res) => {
         });
     }
 }
-
-   
-
-

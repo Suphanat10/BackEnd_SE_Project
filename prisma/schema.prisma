@@ -14,6 +14,7 @@ model course {
   course_visibility  Boolean?
   instructor         Int?
   image              String?         @db.VarChar(255)
+  cost               Float?
   users_account      users_account?  @relation(fields: [instructor], references: [user_id], onDelete: Restrict, onUpdate: Restrict, map: "course_ibfk_1")
   course_exam        course_exam[]
   course_lesson      course_lesson[]

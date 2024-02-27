@@ -12,9 +12,8 @@ module.exports = function (app) {
     next();
   });
 
+ app.get("/api/users/registration/:id", controller.get_user_registration);
 
-app.get("/api/users/all",  controller.usersAll);
-app.get("/api/users/id/:user_id", controller.get_userById);
 
 
 

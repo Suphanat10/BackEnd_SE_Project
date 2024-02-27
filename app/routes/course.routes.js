@@ -14,8 +14,8 @@ module.exports = function (app) {
   });
 
   app.post("/api/course/createCourse", 
-  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
-  controller.create);
+     [authJwt.verifyToken, authJwt.isTutor],
+     controller.create);
 
 
     app.post("/api/course/createLesson", 
@@ -64,7 +64,7 @@ module.exports = function (app) {
   app.get("/api/course/mycourse",
  [ authJwt.verifyToken],
 
-    controller.get_course_by_instructor);
+    controller.get_mycourse);
 
 
 };
