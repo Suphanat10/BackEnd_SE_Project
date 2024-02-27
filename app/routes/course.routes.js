@@ -27,18 +27,25 @@ module.exports = function (app) {
      controller.course_lesson_content);
 
   app.get("/api/course/getCourse", controller.get_course);
-  app.get("/api/course/getCourse/:id", controller.get_course_by_id);
+
+  app.get("/api/course/getCourseContent/:id",
+  [authJwt.verifyToken],
+   controller.get_lesson);
+
+  app.get("/api/course/getCourse/:id",
+  //  [authJwt.verifyToken],
+   controller.get_course_by_id);
   
 
-  app.put("/api/course/updateCourse", 
-  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+  app.post("/api/course/updateCourse", 
+  [authJwt.verifyToken],
   controller.update_course);
 
-  app.put("/api/course/updateLesson",
+  app.post("/api/course/updateLesson",
   // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
    controller.update_lesson);
 
-  app.put("/api/course/updateContent", 
+  app.post("/api/course/updateContent", 
   // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
   controller.update_content);
 
@@ -65,6 +72,8 @@ module.exports = function (app) {
  [ authJwt.verifyToken],
 
     controller.get_mycourse);
+
+
 
 
 };
