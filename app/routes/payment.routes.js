@@ -12,8 +12,8 @@ module.exports = function (app) {
     next();
   });
 
-
-    // app.post("/api/exam/createExam",
-    // // [authJwt.verifyToken, authJwt.isTutor],
-    // controller.create_course_exam);
+  app.post("/api/course/payment/submit_document", 
+     [authJwt.verifyToken],
+     controller.submit_document);
+  
 }

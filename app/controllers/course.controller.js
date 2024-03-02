@@ -2,11 +2,14 @@ const { PrismaClient } = require('@prisma/client');
 const e = require('express');
 const prisma = new PrismaClient();
 
+
+
 exports.create = async (req, res) => {
     try {
         const { course_name, course_description, course_visibility, cost } = req.body;
         const instructor = req.user_id;
         const image = req.body.image;
+        const  image_account = req.body.image_account;
 
 
         if (!course_name || !course_description || !instructor) {
@@ -36,7 +39,8 @@ exports.create = async (req, res) => {
                 course_visibility: course_visibility,
                 instructor: instructor,
                 image: image,
-                cost: cost
+                cost: cost,
+                img_account: image_account
             }
         });
 
@@ -52,6 +56,8 @@ exports.create = async (req, res) => {
         });
     }
 };
+
+
 
 exports.course_lesson = async (req, res) => {
     try {
@@ -177,9 +183,6 @@ exports.get_course = async (req, res) => {
 }
 
 
-
-
-
 exports.update_course = async (req, res) => {
     try {
         const course_id = req.body.course_id;
@@ -188,9 +191,10 @@ exports.update_course = async (req, res) => {
         const course_visibility = req.body.course_visibility;
         const image = req.body.image;
         const cost = req.body.cost;
+        const image_account = req.body.image_account;
         
 
-        if (!course_id || !course_name || !course_description || !course_visibility ) {
+        if (!course_id || !course_name || !course_description ) {
             return res.status(400).send({
                 message: "Course ID, Course Name, Course Description, and Course Visibility are required!",
                 code: 400
@@ -219,7 +223,8 @@ exports.update_course = async (req, res) => {
                 course_description: course_description,
                 course_visibility: course_visibility,
                 image: image,
-                cost: cost
+                cost: cost,
+                img_account: image_account
             }
         });
 
@@ -505,7 +510,7 @@ exports.get_course_by_id = async (req, res) => {
 exports.regis_course = async (req, res) => {
     try {
         const course_id = req.body.course_id
-        const user_id = req.body.user_id
+        const user_id =  req.user_id;
 
 
         if (!course_id || !user_id) {
@@ -568,13 +573,13 @@ exports.regis_course = async (req, res) => {
                 data: {
                     course_id: course_id,
                     user_id: user_id,
-                    registration_status: 1,
-                    completion_status: 1
+                    registration_status: 2,
+                    completion_status: 0,
                 }
             })
             return res.status(200).send({
                 message: "Course was registered successfully!",
-                status_registration: true,
+                status_registration: 2,
                 code: 200
             });
 
@@ -589,7 +594,7 @@ exports.regis_course = async (req, res) => {
             })
             return res.status(200).send({
                 message: "Course was registered successfully!",
-                status_registration: false,
+                registration_status: 1,
                 code: 200
             });
 
@@ -619,34 +624,44 @@ exports.get_mycourse = async (req, res) => {
         if (users.permission_id == 1) {
             const course = await prisma.course.findMany({
                 where: {
+                  course_reg: {
+                    some: {
+                      user_id: user_id
+                    }
+                  }
+                },
+                select: {
+                  course_id: true,
+                  course_name: true,
+                  course_description: true,
+                  course_visibility: true,
+                  image: true,
+                  cost: true,
+                  course_lesson: {
+                    select: {
+                      lesson_name: true,
+                      lesson_id: true
+                    }
+                  },
+                  users_account: {
+                    select: {
+                      prefix: true,
+                      first_name: true,
+                      last_name: true
+                    }
+                },
                     course_reg: {
-                        some: {
+                        where: {
                             user_id: user_id
                         }
                     }
-                },
-                select: {
-                    course_id: true,
-                    course_name: true,
-                    course_description: true,
-                    course_visibility: true,
-                    image: true,
-                    cost: true,
-                    course_lesson: {
-                        select: {
-                            lesson_name: true,
-                            lesson_id: true,
-                        }
-                    },
-                    users_account: {
-                        select: {
-                            prefix: true,
-                            first_name: true,
-                            last_name: true,
-                        }
-                    }
+                
+                     
+
+    
                 }
-            });
+              });
+              
 
             if (!course) {
                 return res.status(200).send([]);

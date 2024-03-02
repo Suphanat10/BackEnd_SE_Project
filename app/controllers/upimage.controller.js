@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 
 
-exports.uploadcourse = async (req, res) => {
+exports.upload_course = async (req, res) => {
     
     res.status(200).send({
       status: true,
@@ -11,6 +11,9 @@ exports.uploadcourse = async (req, res) => {
     
     });
   };
-  
-  
+
+
+
+
+
 

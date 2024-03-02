@@ -5,6 +5,8 @@ const multer  = require('multer')
 const upload = require("../multer_controller/multer");
 
 
+
+
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -17,21 +19,10 @@ module.exports = function (app) {
   app.post("/api/img/upload/course",
  [authJwt.verifyToken],
   upload.single('file'),
-  controller.uploadcourse);
-
-
-
-    // app.post("/api/profile/updatePassword", 
-    // // [authJwt.verifyToken],
-    // controller.updatePassword);
+  controller.upload_course);
 
 
 
 
-
-
-
-
-
-
+  
 };

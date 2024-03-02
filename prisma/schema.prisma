@@ -15,6 +15,7 @@ model course {
   instructor         Int?
   image              String?         @db.VarChar(255)
   cost               Float?
+  img_account        String?         @db.VarChar(255)
   users_account      users_account?  @relation(fields: [instructor], references: [user_id], onDelete: Restrict, onUpdate: Restrict, map: "course_ibfk_1")
   course_exam        course_exam[]
   course_lesson      course_lesson[]
@@ -56,11 +57,12 @@ model course_exam_problem {
 }
 
 model course_lesson {
-  lesson_id      Int              @id @default(autoincrement())
-  lesson_name    String?          @db.VarChar(255)
-  course_id      Int?
-  course         course?          @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_lesson_ibfk_1")
-  lesson_chapter lesson_chapter[]
+  lesson_id                Int              @id @default(autoincrement())
+  lesson_name              String?          @db.VarChar(255)
+  course_id                Int?
+  completion_status_lesson Int?
+  course                   course?          @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_lesson_ibfk_1")
+  lesson_chapter           lesson_chapter[]
 
   @@index([course_id], map: "course_id")
 }

@@ -27,6 +27,7 @@ module.exports = function (app) {
      controller.course_lesson_content);
 
   app.get("/api/course/getCourse", controller.get_course);
+  
 
   app.get("/api/course/getCourseContent/:id",
   [authJwt.verifyToken],
@@ -62,8 +63,9 @@ module.exports = function (app) {
 
 
   app.post("/api/course/registerCourse",
-  // [authJwt.verifyToken, authJwt.isStudent],
+  [authJwt.verifyToken, authJwt.isStudent],
     controller.regis_course);
+
 
 
 
