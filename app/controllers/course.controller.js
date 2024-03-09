@@ -1,5 +1,4 @@
 const { PrismaClient } = require('@prisma/client');
-const e = require('express');
 const prisma = new PrismaClient();
 
 
@@ -716,6 +715,7 @@ exports.get_mycourse = async (req, res) => {
 exports.get_lesson = async (req, res) => {
     try {
         const course_id = parseInt(req.params.id);
+        const user_id = req.user_id;    
 
         if (!course_id) {
             return res.status(400).send({
@@ -736,30 +736,42 @@ exports.get_lesson = async (req, res) => {
                 code: 404
             });
         }
-
-
-        const lesson = await prisma.course_lesson.findMany({
+   
+        const content = await prisma.course_lesson.findMany({
             where: {
-                course_id: course_id,
+                course_id: course_id
             },
-            include: {
-                lesson_chapter: true
+            select: {
+                lesson_name: true,
+                course_id: true,
+                lesson_chapter: {
+                    select: {
+                        lesson_chapter_id: true,
+                        content_data: true,
+                        content_type: true
+                    }
+                },
+                course_exam: {
+                    select: {
+                        exam_name: true,
+                        exam_id: true,
+                        course_exam_problem: {
+                            select: {
+                                problem_name: true,
+                                problem_id: true,
+                                course_exam_choices: true
+                            }
+                        }
+                    }
+                }
             }
         });
-
-        lesson.map((course) => {
-            course.lesson_chapter_count = course.lesson_chapter.length;
-        })
-
-
-
-        if (!lesson) {
+        
+        if (!content) {
             return res.status(404).send([]);
         }
 
-
-
-        res.status(200).send(lesson);
+        res.status(200).send(content);
     } catch (e) {
         res.status(500).send({
             message: e.message,

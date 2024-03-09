@@ -28,10 +28,13 @@ model course_exam {
   exam_id             Int                   @id @default(autoincrement())
   exam_name           String?               @db.VarChar(255)
   course_id           Int?
+  lesson_id           Int?
   course              course?               @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_exam_ibfk_1")
+  course_lesson       course_lesson?        @relation(fields: [lesson_id], references: [lesson_id], onDelete: NoAction, onUpdate: NoAction, map: "course_exam_ibfk_2")
   course_exam_problem course_exam_problem[]
 
   @@index([course_id], map: "course_id")
+  @@index([lesson_id], map: "lesson_id")
 }
 
 model course_exam_choices {
@@ -57,12 +60,12 @@ model course_exam_problem {
 }
 
 model course_lesson {
-  lesson_id                Int              @id @default(autoincrement())
-  lesson_name              String?          @db.VarChar(255)
-  course_id                Int?
-  completion_status_lesson Int?
-  course                   course?          @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_lesson_ibfk_1")
-  lesson_chapter           lesson_chapter[]
+  lesson_id      Int              @id @default(autoincrement())
+  lesson_name    String?          @db.VarChar(255)
+  course_id      Int?
+  course_exam    course_exam[]
+  course         course?          @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_lesson_ibfk_1")
+  lesson_chapter lesson_chapter[]
 
   @@index([course_id], map: "course_id")
 }
