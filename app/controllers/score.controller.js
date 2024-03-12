@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 exports.calculateScore = async (req, res) => {
-    
+
     try {
         const registration_id = parseInt(req.params.registration_id);
         let score = 0;
@@ -58,3 +58,4 @@ exports.calculateScore = async (req, res) => {
     }
 
 }
+
