@@ -2,22 +2,58 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 exports.calculateScore = async (req, res) => {
+    
     try {
-        const course_reg_exam_ans_id_get = req.param.course_reg_exam_ans_id;
+        const registration_id = parseInt(req.params.registration_id);
+        let score = 0;
 
-        const problemAndchoice = await prisma.reg_exam_ans.findFirst({
+        const  Ans = await prisma.reg_exam_ans.findMany({
+            where: {
+                registration_id: registration_id
+            },
             select: {
-                problem_id: true,
-                select_choice: true
-            },where:{
-                course_reg_exam_ans_id : course_reg_exam_ans_id_get
-            }
-        })
+                select_choice: true,
+                course_exam_problem: {
+                  select: {
+                    problem_name: true,
+                    correct_choice: true,
+                    course_exam: {
+                      select: {
+                        exam_name: true
+                      }
+                    }
+                  }
+                }
+              }
+        });
 
-        let score = 0
-        problemAndchoice.problem_id
-        
+        if (!Ans) {
+            return res.status(200).send([]);
+        }
+
+        Ans.forEach(element => {
+            if (element.select_choice == element.course_exam_problem.correct_choice) {
+                score += 1;
+            }
+        });
+
+        if (score >=  Ans.length/2) {
+            res.status(200).send({
+                message: "ยินดีด้วยคุณผ่านการทำเเบบทดสอบ",
+                score: score,
+        })
+    } else {
+        res.status(200).send({
+            message: "คุณไม่ผ่านการทำเเบบทดสอบ",
+            score: score
+        })
+    }
+
     } catch (error) {
+        res.status(500).send({
+            message: error.message || "Some error occurred while calculating score."
+        });
+
 
     }
 

@@ -13,6 +13,11 @@ module.exports = function (app) {
   });
 
 
+
+  app.get("/api/score/calculateScore/:registration_id",
+    // [authJwt.verifyToken],
+    controller.calculateScore);
+
     // app.post("/api/profile/updatePassword", 
     // // [authJwt.verifyToken],
     // controller.updatePassword);
