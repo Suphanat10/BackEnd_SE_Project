@@ -14,7 +14,7 @@ module.exports = function (app) {
 
 
 
-  app.get("/api/score/calculateScore/:registration_id",
+  app.get("/api/score/calculateScore/:registration_id/:exam_id",
     // [authJwt.verifyToken],
     controller.calculateScore);
 

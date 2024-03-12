@@ -5,28 +5,33 @@ exports.calculateScore = async (req, res) => {
 
     try {
         const registration_id = parseInt(req.params.registration_id);
+        const exam_id = parseInt(req.params.exam_id);
         let score = 0;
 
-        const  Ans = await prisma.reg_exam_ans.findMany({
+        const Ans = await prisma.reg_exam_ans.findMany({
             where: {
-                registration_id: registration_id
+              registration_id: registration_id,
+              course_exam_problem: {
+                exam_id: exam_id
+              }
             },
             select: {
-                select_choice: true,
-                course_exam_problem: {
-                  select: {
-                    problem_name: true,
-                    correct_choice: true,
-                    course_exam: {
-                      select: {
-                        exam_name: true
-                      }
+              select_choice: true,
+              course_exam_problem: {
+                select: {
+                  problem_name: true,
+                  correct_choice: true,
+                  course_exam: {
+                    select: {
+                      exam_name: true,
+                      exam_id: true
                     }
                   }
                 }
               }
-        });
-
+            }
+          });
+          
         if (!Ans) {
             return res.status(200).send([]);
         }
@@ -41,6 +46,7 @@ exports.calculateScore = async (req, res) => {
             res.status(200).send({
                 message: "ยินดีด้วยคุณผ่านการทำเเบบทดสอบ",
                 score: score,
+                Ans: Ans
         })
     } else {
         res.status(200).send({
