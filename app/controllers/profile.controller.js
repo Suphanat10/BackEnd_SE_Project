@@ -29,7 +29,7 @@ exports.getProfile = async (req, res) => {
             return res.status(404).send([]);
         }
 
-        res.status(200).send({user});
+        res.status(200).send(user);
     } catch (err) {
         res.status(500).send({
             message: err.message,
