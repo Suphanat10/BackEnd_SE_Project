@@ -624,7 +624,7 @@ exports.get_mycourse = async (req, res) => {
                 where: {
                     course_reg: {
                         some: {
-                            user_id: user_id
+                            user_id: 5
                         }
                     }
                 },
@@ -650,9 +650,12 @@ exports.get_mycourse = async (req, res) => {
                     },
                     course_reg: {
                         select: {
+                            registration_status: true,
+                            completion_status: true,
                             users_reg_transfer_document: {
                                 select: {
-                                    transfer_document: true
+                                    transfer_document: true,
+                                    comment :true
                                 }
                             }
                         },
@@ -662,6 +665,8 @@ exports.get_mycourse = async (req, res) => {
                     }
                 }
             });
+            
+            
             
 
             if (!course) {
