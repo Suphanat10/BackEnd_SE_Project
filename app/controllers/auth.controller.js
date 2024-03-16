@@ -6,6 +6,44 @@ const prisma = new PrismaClient()
 
 
 
+exports.delete_google = async (req, res) => {
+    try {
+        const  user_id = req.user_id;
+
+        const  updateUser = await prisma.users_account.update({
+            where: {
+                user_id: user_id
+            },
+            data: {
+                google_id: null,
+            }
+        })
+        
+        res.status(200).send({
+            message: "Google Account was deleted successfully!",
+            code: 200
+        });
+
+        const saveLogs = await prisma.logs.create({
+            data: {
+                log_description: "ลบ Google Account",
+                user_id: user_id,
+                ip_address: req.ip,
+                timestamp: new Date()
+            }
+        })
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "Some error occurred while delete the Google Account.",
+            code: 500
+        });
+    }
+}
+
+
+
+
 
 exports.register_by_google = async (req, res) => {
     try {

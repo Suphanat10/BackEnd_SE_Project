@@ -19,7 +19,14 @@ module.exports = function (app) {
   app.post("/api/profile/google",
   [authJwt.verifyToken],
    controller.register_by_google);
+
+   app.post("/api/profile/delete/google",
+  [authJwt.verifyToken],
+    controller.delete_google);
+
+    
   app.post("/api/login/google", controller.login_by_google);
+
 
 
 
