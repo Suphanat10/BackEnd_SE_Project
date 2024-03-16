@@ -13,6 +13,11 @@ module.exports = function (app) {
   });
 
 
+  app.get("/api/profile/getProfile",
+    [authJwt.verifyToken],
+    controller.getProfile);
+    
+
     app.post("/api/profile/updatePassword", 
     [authJwt.verifyToken],
     controller.updatePassword);

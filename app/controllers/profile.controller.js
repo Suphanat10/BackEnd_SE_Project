@@ -3,6 +3,33 @@ const prisma = new PrismaClient();
 const bcrypt = require("bcryptjs");
 
 
+exports.getProfile = async (req, res) => {
+    try {
+        const user_id = req.user_id;
+        const user = await prisma.users_account.findUnique({
+            where: {
+                user_id: user_id
+            }
+        });
+
+        if (!user) {
+            return res.status(404).send([]);
+        }
+
+        res.status(200).send({user});
+    } catch (err) {
+        res.status(500).send({
+            message: err.message,
+            code: 500
+        });
+    }
+}
+
+
+           
+
+
+
 
 exports.updatePassword = async (req, res) => {
     try{
@@ -71,15 +98,16 @@ exports.updatePassword = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
  try {
-    const user_id = req.body.user_id;
+    const user_id = req.user_id;
     const prefix = req.body.prefix;
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
     const email = req.body.email;
-    const username = req.body.username;
+    const  image = req.body.image;
+ 
 
 
-    if (!user_id || !prefix || !first_name || !last_name || !email || !username) {
+    if (!user_id || !prefix || !first_name || !last_name || !email ) {
         return res.status(400).send({
             message: "User ID, Prefix, First Name, Last Name, Email, and Username are required!",
             code: 400
@@ -108,7 +136,7 @@ exports.updateProfile = async (req, res) => {
             first_name: first_name,
             last_name: last_name,
             email: email,
-            username: username
+            image:image
         }
     });
 
@@ -116,6 +144,7 @@ exports.updateProfile = async (req, res) => {
         message: "Profile was updated successfully!",
         code: 200
     });
+
 }catch (err) {
     res.status(500).send({
         message: err.message,
