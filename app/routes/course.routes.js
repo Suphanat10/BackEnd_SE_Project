@@ -15,6 +15,7 @@ module.exports = function (app) {
 
   app.post("/api/course/createCourse", 
      [authJwt.verifyToken, authJwt.isTutor],
+      authJwt.SaveLogs("สร้างคอร์สเรียนใหม่"),
      controller.create);
 
 
@@ -66,6 +67,7 @@ module.exports = function (app) {
 
   app.post("/api/course/registerCourse",
   [authJwt.verifyToken, authJwt.isStudent],
+  authJwt.SaveLogs("ลงทะเบียนคอร์สเรียน"),
     controller.regis_course);
 
 
@@ -74,7 +76,7 @@ module.exports = function (app) {
 
   app.get("/api/course/mycourse",
  [ authJwt.verifyToken],
-
+ authJwt.SaveLogs("เรียกข้อมูลคอร์สที่ลงทะเบียน"),
     controller.get_mycourse);
 
 

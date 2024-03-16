@@ -39,7 +39,7 @@ exports.login_bygoogle = async (req, res) => {
 
         const saveLogs = await prisma.logs.create({
             data: {
-                log_description: "Login by google",
+                log_description: "เข้าสู่ระบบโดยใช้ Google Account",
                 user_id: user.user_id,
                 ip_address: req.ip,
                 timestamp: new Date()
@@ -99,7 +99,7 @@ exports.login = async (req, res) => {
 
         const saveLogs = await prisma.logs.create({
             data: {
-                log_description: "Login",
+                log_description: "เข้าสู่ระบบ",
                 user_id: user.user_id,
                 ip_address: req.ip,
                 timestamp: new Date()
@@ -117,7 +117,6 @@ exports.login = async (req, res) => {
 };
 
 
-
 exports.register = async (req, res) => {
     try {
         const password = req.body.password;
@@ -130,8 +129,7 @@ exports.register = async (req, res) => {
         const gender = req.body.gender;
         const permission_id = req.body.permission_id;
 
-       
-
+    
         if (!password || !username || !confirm_password || !prefix || !first_name || !last_name || !email || !permission_id ||!gender)  {
             return res.status(403).send({
                 message: "All field is required!",
@@ -190,7 +188,7 @@ exports.register = async (req, res) => {
 
             const saveLogs = await prisma.logs.create({
                 data: {
-                    log_description: "register user",
+                    log_description: "ลงทะเบียนผู้ใช้งานใหม่",
                     user_id: createUser.user_id,
                     ip_address: req.ip,
                     timestamp: new Date()
@@ -205,3 +203,6 @@ exports.register = async (req, res) => {
          });
     }
 };
+
+
+

@@ -612,7 +612,6 @@ exports.regis_course = async (req, res) => {
 exports.get_mycourse = async (req, res) => {
     try {
         const user_id = req.user_id;
-        console.log(user_id);
 
         const users = await prisma.users_account.findFirst({
             where: {
@@ -654,10 +653,6 @@ exports.get_mycourse = async (req, res) => {
                             user_id: user_id
                         }
                     }
-                
-                     
-
-    
                 }
               });
               
