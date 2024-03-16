@@ -94,14 +94,14 @@ exports.register_by_google = async (req, res) => {
 exports.login_by_google = async (req, res) => {
     try {
         const google_id = req.body.google_id;
-        console.log(google_id);
-
-        const user = await prisma.users_account.findUnique({
+     
+        
+        const user = await prisma.users_account.findFirst({
             where: {
                 google_id: google_id
             }
         })
-        
+
 
        
         if (!user) {
