@@ -26,29 +26,16 @@ const imageFilter = (req, file, cb) => {
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, __basedir + "Image/courseImage");
+    cb(null, __basedir + "Image/E-Learning");
   },
   filename: (req, file, cb) => {
     if (file.originalname) {
       cb(null, `${Date.now() + makeid(8)}_Course${path.extname(file.originalname)}`);
     } else {
-      cb(null, `${Date.now() + makeid(8)}_Course_IMG.jpeg`);
+      cb(null, `${Date.now() + makeid(8)}_E-Learning_IMG.jpeg`);
     }
   },
 });
-
-// var storage_profile = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//       cb(null, __basedir + "Image/profileImage");
-//     },
-//     filename: (req, file, cb) => {
-//       if (file.originalname) {
-//         cb(null, `${Date.now() + makeid(8)}_PROFILE${path.extname(file.originalname)}`);
-//       } else {
-//         cb(null, `${Date.now() + makeid(8)}_PROFILE_IMG.jpeg`);
-//       }
-//     },
-//   });
 
 var upload = multer({
   storage: storage,
@@ -57,9 +44,6 @@ var upload = multer({
 });
 module.exports = upload;
 
-// var upload_profile = multer({
-//     storage: storage_profile,
-//     limits: { fileSize: maxSize },
-//     fileFilter: imageFilter,
-//   });
-//   module.exports = upload_profile;
+
+
+

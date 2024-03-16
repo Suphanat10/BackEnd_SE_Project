@@ -36,25 +36,30 @@ exports.calculateScore = async (req, res) => {
             return res.status(200).send([]);
         }
 
-        Ans.forEach(element => {
-            if (element.select_choice == element.course_exam_problem.correct_choice) {
-                score += 1;
-            }
-        });
+          let Correct_answer =[];
 
+        for await (const ans of Ans) {
+            if (ans.select_choice === ans.course_exam_problem.correct_choice) {
+                score += 1;
+                Correct_answer.push({exam_id: ans.course_exam_problem.course_exam.exam_id})
+
+            }
+        }
         if (score >=  Ans.length/2) {
             res.status(200).send({
                 message: "ยินดีด้วยคุณผ่านการทำเเบบทดสอบ",
+                status_exam: true,
                 score: score,
-                Ans: Ans
+                Correct_answer: Correct_answer
         })
     } else {
         res.status(200).send({
             message: "คุณไม่ผ่านการทำเเบบทดสอบ",
-            score: score
+            status_exam: false,
+            score: score,
+            Correct_answer: Correct_answer
         })
     }
-
     } catch (error) {
         res.status(500).send({
             message: error.message || "Some error occurred while calculating score."
@@ -64,4 +69,21 @@ exports.calculateScore = async (req, res) => {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
