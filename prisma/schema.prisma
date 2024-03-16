@@ -74,7 +74,6 @@ model course_reg {
   course_id                   Int?
   user_id                     Int?
   registration_status         Int?
-  transfer_document           String?                       @db.VarChar(255)
   completion_status           Int?
   course                      course?                       @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_reg_ibfk_1")
   users_account               users_account?                @relation(fields: [user_id], references: [user_id], onDelete: Restrict, onUpdate: Restrict, map: "course_reg_ibfk_2")
@@ -132,11 +131,11 @@ model users_account {
 }
 
 model users_reg_transfer_document {
-  document_id     Int         @id @default(autoincrement())
-  image           String?     @db.VarChar(255)
-  comment         String?     @db.VarChar(255)
-  registration_id Int?
-  course_reg      course_reg? @relation(fields: [registration_id], references: [registration_id], onDelete: NoAction, onUpdate: NoAction, map: "users_reg_transfer_document_ibfk_1")
+  document_id       Int         @id @default(autoincrement())
+  transfer_document String?     @db.VarChar(255)
+  comment           String?     @db.VarChar(255)
+  registration_id   Int?
+  course_reg        course_reg? @relation(fields: [registration_id], references: [registration_id], onDelete: NoAction, onUpdate: NoAction, map: "users_reg_transfer_document_ibfk_1")
 
   @@index([registration_id], map: "registration_id")
 }
