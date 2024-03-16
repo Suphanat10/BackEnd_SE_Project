@@ -62,6 +62,23 @@ exports.approve = async (req, res) => {
     }
 }
 
+exports.reject = async (req, res) => {
+    try {
+        const registration_id = req.body.registration_id
+        const  comment = req.body.comment;
+        
+
+         
+        
+    
+    } catch (error) {
+        res.status(500).send({
+            message: error.message,
+            code: 500
+        });
+    }
+}
+
 
     
      

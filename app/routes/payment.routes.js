@@ -21,5 +21,12 @@ module.exports = function (app) {
       authJwt.SaveLogs("อนุมัติการชำระเงิน"),
       controller.approve);
 
+  app.post("/api/course/payment/reject",
+      [authJwt.verifyToken],
+      authJwt.SaveLogs("ปฏิเสธการชำระเงิน"),
+      controller.reject);
+
+      
+
   
 }
