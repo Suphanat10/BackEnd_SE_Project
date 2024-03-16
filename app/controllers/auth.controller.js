@@ -10,6 +10,7 @@ const prisma = new PrismaClient()
 exports.register_by_google = async (req, res) => {
     try {
         const google_id = req.body.google_id;
+        const email = req.body.google_email;
         const  user_id = req.user_id;
 
         if(!google_id){
@@ -25,7 +26,8 @@ exports.register_by_google = async (req, res) => {
                 user_id: user_id
             },
             data: {
-                google_id: google_id
+                google_id: google_id,
+                email: email
             }
         })
 
