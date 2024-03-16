@@ -34,6 +34,7 @@ exports.submit_document = async (req, res) => {
 // 0 ไม่สำเร็จ
 // 1 ลงแล้วแต่ยังไม่จ่ายตั้ง
 // 2 จ่ายตังแล้ว
+
 exports.approve = async (req, res) => {
     try {
         const registration_id = req.body.registration_id

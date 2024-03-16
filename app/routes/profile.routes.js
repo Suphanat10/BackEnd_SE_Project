@@ -14,11 +14,11 @@ module.exports = function (app) {
 
 
     app.post("/api/profile/updatePassword", 
-    // [authJwt.verifyToken],
+    [authJwt.verifyToken],
     controller.updatePassword);
 
-    app.put("/api/profile/updateProfile",
-    // [authJwt.verifyToken],
+    app.post("/api/profile/updateProfile",
+    [authJwt.verifyToken],
     controller.updateProfile);
 
 
