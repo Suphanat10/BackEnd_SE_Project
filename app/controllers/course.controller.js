@@ -624,7 +624,7 @@ exports.get_mycourse = async (req, res) => {
                 where: {
                     course_reg: {
                         some: {
-                            user_id: 5
+                            user_id: user_id
                         }
                     }
                 },
