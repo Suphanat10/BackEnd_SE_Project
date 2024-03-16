@@ -49,6 +49,17 @@ exports.approve = async (req, res) => {
                     registration_status: 2
                 }
             });
+
+            const update2 = await prisma.course_reg.update({
+                where: {
+                    registration_id: registration_id
+                },
+                data: {
+                    registration_status: 0
+                }
+            });
+
+
             return  res.status(200).send({
             message: "Approve complete", 
             status: true,
@@ -82,6 +93,11 @@ exports.reject = async (req, res) => {
                     comment: comment
                 }
             });
+            return res.status(200).send({
+                message: "Reject complete",
+                status: true
+            });
+        }else{
             return res.status(200).send({
                 message: "Reject complete",
                 status: true
