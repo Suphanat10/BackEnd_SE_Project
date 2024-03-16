@@ -17,10 +17,18 @@ exports.submit_document = async (req, res) => {
             }
         });
 
+        const data = await prisma.users_reg_transfer_document.findFirst({
+            where: {
+                registration_id: registration_id
+            }
+        });
+
 
         res.status(200).send({
             message: "Submit complete", 
-            code: 200
+            code: 200,
+            data: data
+
         })
         
     } catch (error) {
