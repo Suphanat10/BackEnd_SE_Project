@@ -440,8 +440,16 @@ exports.get_course_by_id = async (req, res) => {
                       first_name: true,
                       last_name: true,
                     }
-                  }
+                  },
+                  users_reg_transfer_document: {
+                    select: {
+                        transfer_document: true,
+                        comment :true
+                    }
                 }
+
+                }
+
               }
             }
           });
@@ -700,24 +708,51 @@ exports.get_mycourse = async (req, res) => {
                             last_name: true,
                         }
                     },
-                    
-                    course_reg: {
-                        select: {
-                            registration_status: true,
-                            completion_status: true,
-                            users_reg_transfer_document: {
-                                select: {
-                                    transfer_document: true,
-                                    comment :true
-                                }
-                            }
-                        }
-                    }
+                    // course_reg: {
+                    //     select: {
+                    //         registration_status: true,
+                    //         completion_status: true,
+        
+                    //         users_reg_transfer_document: {
+                    //             select: {
+                    //                 transfer_document: true,
+                    //                 comment :true
+                    //             }
+                    //         }
+                    //     }
+                    // }
                 }
 
             });
 
 
+            //  const course = await prisma.course.findMany({
+            //     where: {
+            //         instructor: user_id
+            //     },
+            //     select: {
+            //         course_id: true,
+            //         course_name: true,
+            //         course_description: true,
+            //         course_visibility: true,
+            //         image: true,
+            //         cost: true,
+            //         course_lesson: {
+            //             select: {
+            //                 lesson_name: true,
+            //                 lesson_id: true,
+            //             }
+            //         },
+            //         users_account: {
+            //             select: {
+            //                 prefix: true,
+            //                 first_name: true,
+            //                 last_name: true,
+            //             }
+            //         }
+
+            //     }
+            // });
                    
 
 
