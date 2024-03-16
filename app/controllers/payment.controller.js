@@ -9,14 +9,14 @@ exports.submit_document = async (req, res) => {
         const  registration_id = req.body.registration_id;
 
 
-        const submit = await prisma.users_reg_transfer_document.update({
-            where: {
-                registration_id:registration_id
-            },
+        const submit = await prisma.users_reg_transfer_document.create({
             data: {
-                transfer_document: img_payment
+                registration_id: registration_id,
+                transfer_document: img_payment,
+                comment : null
             }
         });
+
 
         res.status(200).send({
             message: "Submit complete", 
