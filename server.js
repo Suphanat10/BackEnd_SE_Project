@@ -23,7 +23,7 @@ app.listen(PORT, () => {
 
 
 app.use("/api/public",express.static('./app/image/courseimage'));
-app.use("/api/profile/img",express.static('./app/image/E-Learning'));
+app.use("/api/profile/img",express.static('./app/image/profile'));
 
 
 require("./app/routes/auth.routes")(app);
