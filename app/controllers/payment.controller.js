@@ -25,7 +25,7 @@ exports.submit_document = async (req, res) => {
                 registration_status: 1
             }
         });
-        
+
 
         res.status(200).send({
             message: "Submit complete", 
@@ -60,14 +60,7 @@ exports.approve = async (req, res) => {
                 }
             });
 
-            const update2 = await prisma.course_reg.update({
-                where: {
-                    registration_id: registration_id
-                },
-                data: {
-                    registration_status: 0
-                }
-            });
+   
 
 
             return  res.status(200).send({
