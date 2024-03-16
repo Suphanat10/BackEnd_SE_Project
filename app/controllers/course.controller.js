@@ -661,6 +661,7 @@ exports.get_mycourse = async (req, res) => {
                         select: {
                             registration_status: true,
                             completion_status: true,
+                            registration_id: true,
                             users_reg_transfer_document: {
                                 select: {
                                     transfer_document: true,

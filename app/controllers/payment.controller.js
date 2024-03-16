@@ -67,6 +67,17 @@ exports.reject = async (req, res) => {
         const registration_id = req.body.registration_id
         const  comment = req.body.comment;
 
+        const update = await prisma.users_reg_transfer_document.update({
+            where: {
+                registration_id: registration_id
+            },
+            data: {
+                registration_status: 0
+            }
+        });
+
+
+
 
 
 
