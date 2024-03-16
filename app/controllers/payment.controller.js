@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 
 //submit doc
 exports.submit_document = async (req, res) => {
+
     try {
         const img_payment = req.body.img_payment;
         const  registration_id = req.body.registration_id;
@@ -21,6 +22,7 @@ exports.submit_document = async (req, res) => {
             message: "Submit complete", 
             code: 200
         })
+        
     } catch (error) {
         res.status(500).send({
             message: error.message,

@@ -7,7 +7,55 @@ const prisma = new PrismaClient()
 
 
 
-exports.login_bygoogle = async (req, res) => {
+exports.register_by_google = async (req, res) => {
+    try {
+        const google_id = req.body.google_id;
+        const  user_id = req.user_id;
+
+        if(!google_id){
+            return res.status(403).send({
+                message: "Google ID is required!",
+                code: 403
+            });
+        }
+        
+
+        const updateUser = await prisma.users_account.update({
+            where: {
+                user_id: user_id
+            },
+            data: {
+                google_id: google_id
+            }
+        })
+
+        res.status(200).send({
+            message: "Google Account was registered successfully!",
+            code: 200
+        });
+
+        const saveLogs = await prisma.logs.create({
+            data: {
+                log_description: "ลงทะเบียน Google Account",
+                user_id: user_id,
+                ip_address: req.ip,
+                timestamp: new Date()
+            }
+        })
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "Some error occurred while register the User.",
+            code: 500
+        });
+    }
+}
+
+
+
+
+
+exports.login_by_google = async (req, res) => {
     try {
         const google_id = req.body.google_id;
 
@@ -113,7 +161,6 @@ exports.login = async (req, res) => {
          });
     }
 
-   
 };
 
 

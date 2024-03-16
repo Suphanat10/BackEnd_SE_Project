@@ -7,7 +7,6 @@ exports.get_course_exam = async (req, res) => {
     try {
         const course_id = parseInt(req.params.course_id);
 
-
         if(!course_id){
             return res.status(400).send({
                 message: "Course ID is required!",
@@ -33,9 +32,6 @@ exports.get_course_exam = async (req, res) => {
                 course_id: course_id
             }
         });
-
-        
-
         res.status(200).send({courseExam});
     }
     catch (err) {

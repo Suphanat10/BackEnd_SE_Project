@@ -19,7 +19,7 @@ module.exports = function (app) {
 
   app.get("/api/profile/getProfile",
     [authJwt.verifyToken],
-    authJwt.SaveLogs("เรียกข้อมูลส่วนตัว"),
+    // authJwt.SaveLogs("เรียกข้อมูลส่วนตัว"),
     controller.getProfile);
 
 
@@ -37,7 +37,7 @@ module.exports = function (app) {
 
     app.get("/api/profile/get_img",
     [authJwt.verifyToken],
-    authJwt.SaveLogs("เรียกรูปภาพ Profile"),
+    // authJwt.SaveLogs("เรียกรูปภาพ Profile"),
     controller.get_img);
 
     app.post("/api/profile/upload_img",
