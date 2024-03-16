@@ -25,7 +25,7 @@ exports.delete_google = async (req, res) => {
 
         const saveLogs = await prisma.logs.create({
             data: {
-                log_description: "ลบ Google Account",
+                log_description: "ยกเลิกการเชื่อต่อ Google Account",
                 user_id: user_id,
                 ip_address: req.ip,
                 timestamp: new Date()
@@ -75,7 +75,7 @@ exports.register_by_google = async (req, res) => {
 
         const saveLogs = await prisma.logs.create({
             data: {
-                log_description: "ลงทะเบียน Google Account",
+                log_description: "การเชื่อต่อ Google Account",
                 user_id: user_id,
                 ip_address: req.ip,
                 timestamp: new Date()
