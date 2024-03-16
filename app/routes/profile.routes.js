@@ -19,24 +19,30 @@ module.exports = function (app) {
 
   app.get("/api/profile/getProfile",
     [authJwt.verifyToken],
+    authJwt.SaveLogs("Get Profile"),
     controller.getProfile);
 
 
     app.post("/api/profile/updatePassword", 
     [authJwt.verifyToken],
+    authJwt.SaveLogs("Update Password"),
     controller.updatePassword);
 
     app.post("/api/profile/updateProfile",
     [authJwt.verifyToken],
-    controller.updateProfile);
+    authJwt.SaveLogs("Update Profile"),
+    controller.updateProfile
+);
 
     app.get("/api/profile/get_img",
     [authJwt.verifyToken],
+    authJwt.SaveLogs("Get Image Profile"),
     controller.get_img);
 
     app.post("/api/profile/upload_img",
     [authJwt.verifyToken],
     upload.single('file'),
+    authJwt.SaveLogs("Upload Image Profile"),
     controller.upuploadImage);
 
 

@@ -1,6 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const bcrypt = require("bcryptjs");
+const config = require("../config/auth.config");
+var jwt = require("jsonwebtoken");
 
 
 exports.getProfile = async (req, res) => {
@@ -78,7 +80,7 @@ exports.upuploadImage = async (req, res) => {
                 code: 400
             });
         }
-        
+
         const updateUser = await prisma.users_account.update({
             where: {
                 user_id: user_id
@@ -219,8 +221,21 @@ exports.updateProfile = async (req, res) => {
         }
     });
 
+
+    var token = jwt.sign({ id: user.user_id }, config.secret, {
+        expiresIn: 86400 // 24 hours
+    });
+
+
     res.status(200).send({
         message: "Profile was updated successfully!",
+        id : updateUser.user_id,
+        prefix: updateUser.prefix,
+        name: updateUser.prefix + " " + updateUser.first_name + " " + updateUser.last_name,
+        email: updateUser.email,
+        gender: updateUser.gender, 
+        permission : updateUser.permission_id,
+        accessToken: token,
         code: 200
     });
 

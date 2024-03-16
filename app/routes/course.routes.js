@@ -26,7 +26,9 @@ module.exports = function (app) {
     // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
      controller.course_lesson_content);
 
-  app.get("/api/course/getCourse", controller.get_course);
+  app.get("/api/course/getCourse", 
+  
+  controller.get_course);
   
 
   app.get("/api/course/getCourseContent/:id",
