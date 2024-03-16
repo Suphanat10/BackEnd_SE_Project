@@ -6,6 +6,7 @@ const prisma = new PrismaClient()
 
 
 
+
 exports.login_bygoogle = async (req, res) => {
     try {
         const google_id = req.body.google_id;
@@ -35,6 +36,15 @@ exports.login_bygoogle = async (req, res) => {
             permission : user.permission_id,
             accessToken: token
         });
+
+        const saveLogs = await prisma.logs.create({
+            data: {
+                log_description: "Login by google",
+                user_id: user.user_id,
+                ip_address: req.ip,
+                timestamp: new Date()
+            }
+        })
 
     } catch (err) {
         res.status(500).send({
@@ -86,6 +96,15 @@ exports.login = async (req, res) => {
             permission : user.permission_id,
             accessToken: token
         });
+
+        const saveLogs = await prisma.logs.create({
+            data: {
+                log_description: "Login",
+                user_id: user.user_id,
+                ip_address: req.ip,
+                timestamp: new Date()
+            }
+        })
     
     } catch (err) {
         res.status(500).send({ 
@@ -168,6 +187,15 @@ exports.register = async (req, res) => {
             permission : createUser.permission_id,
             accessToken: token
             });
+
+            const saveLogs = await prisma.logs.create({
+                data: {
+                    log_description: "register user",
+                    user_id: createUser.user_id,
+                    ip_address: req.ip,
+                    timestamp: new Date()
+                }
+            })
 
     }
     catch (err) {

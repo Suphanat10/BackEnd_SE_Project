@@ -1,5 +1,7 @@
 const { verifySignUp } = require("../middleware");
 const controller = require("../controllers/auth.controller");
+const { authJwt } = require("../middleware");
+
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -13,5 +15,7 @@ module.exports = function (app) {
 
 
   app.post("/api/login", controller.login);
+
+
   app.post("/api/register",  controller.register);
 };
