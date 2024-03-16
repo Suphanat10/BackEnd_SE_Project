@@ -39,6 +39,71 @@ exports.getProfile = async (req, res) => {
 }
 
 
+exports.get_img = async (req, res) => {
+    try {
+        const user_id = req.user_id;
+
+        const user = await prisma.users_account.findUnique({
+            where: {
+                user_id: user_id
+            },
+            select: {
+                image: true,
+                
+            }
+        });
+
+        if (!user) {
+            return res.status(404).send([]);
+        }
+        res.status(200).send(user);
+    } catch (err) {
+        res.status(500).send({
+            message: err.message,
+            code: 500
+        });
+    }
+}
+
+
+
+exports.upuploadImage = async (req, res) => {
+    try {
+        const user_id = req.user_id;
+        const image =  req.file.filename;
+
+        if (!user_id || !image) {
+            return res.status(400).send({
+                message: "User ID and Image are required!",
+                code: 400
+            });
+        }
+        
+        const updateUser = await prisma.users_account.update({
+            where: {
+                user_id: user_id
+            },
+            data: {
+                image: image
+            }
+        });
+
+        res.status(200).send({
+            message: "Image was updated successfully!",
+            code: 200
+        });
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message,
+            code: 500
+        });
+    }
+}
+
+
+
+
            
 
 
