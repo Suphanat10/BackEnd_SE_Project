@@ -113,10 +113,11 @@ exports.updateProfile = async (req, res) => {
  try {
     const user_id = req.user_id;
     const prefix = req.body.prefix;
+    const gender = req.body.gender;
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
     const email = req.body.email;
-    const  image = req.body.image;
+
  
 
 
@@ -149,7 +150,7 @@ exports.updateProfile = async (req, res) => {
             first_name: first_name,
             last_name: last_name,
             email: email,
-            image:image
+            gender:gender
         }
     });
 
