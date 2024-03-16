@@ -40,9 +40,7 @@ exports.submit_document = async (req, res) => {
 exports.approve = async (req, res) => {
     try {
         const registration_id = req.body.registration_id
-        const registration_status = req.body.registration_status
 
-      if(registration_status == 2){
             const update = await prisma.course_reg.update({
                 where: {
                     registration_id: registration_id
@@ -55,7 +53,7 @@ exports.approve = async (req, res) => {
             message: "Approve complete", 
             status: true,
             })
-        }
+    
     } catch (error) {
         res.status(500).send({
             message: error.message,

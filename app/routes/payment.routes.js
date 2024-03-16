@@ -18,6 +18,7 @@ module.exports = function (app) {
 
   app.post("/api/course/payment/approve",
       [authJwt.verifyToken],
+      authJwt.SaveLogs("อนุมัติการชำระเงิน"),
       controller.approve);
 
   
