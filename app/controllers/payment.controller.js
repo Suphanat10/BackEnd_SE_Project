@@ -96,6 +96,17 @@ exports.reject = async (req, res) => {
                     comment: comment
                 }
             });
+
+            const update2 = await prisma.course_reg.update({
+                where: {
+                    registration_id: registration_id
+                },
+                data: {
+                    registration_status: 0
+                }
+            });
+        
+
             return res.status(200).send({
                 message: "Reject complete",
                 status: true
