@@ -18,7 +18,6 @@ exports.delete_google = async (req, res) => {
                 google_id: null,
             }
         })
-        
         res.status(200).send({
             message: "Google Account was deleted successfully!",
             code: 200
