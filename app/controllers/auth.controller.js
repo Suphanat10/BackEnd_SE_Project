@@ -96,7 +96,7 @@ exports.register_by_google = async (req, res) => {
 
 exports.login_by_google = async (req, res) => {
     try {
-        const google_id = req.body.google_id;
+        const google_id = parseInt(req.body.google_id);
 
         const user = await prisma.users_account.findUnique({
             where: {
