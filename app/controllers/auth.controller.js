@@ -91,19 +91,19 @@ exports.register_by_google = async (req, res) => {
 }
 
 
-
-
-
 exports.login_by_google = async (req, res) => {
     try {
-        const google_id = parseInt(req.body.google_id);
+        const google_id = req.body.google_id;
+        console.log(google_id);
 
         const user = await prisma.users_account.findUnique({
             where: {
                 google_id: google_id
             }
         })
+        
 
+       
         if (!user) {
             return res.status(404).send({
                 message: "User Not found.",
@@ -140,6 +140,11 @@ exports.login_by_google = async (req, res) => {
         });
     }
 }
+
+
+
+
+
 
 exports.login = async (req, res) => {
     try{
