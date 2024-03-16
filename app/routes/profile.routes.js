@@ -28,6 +28,7 @@ module.exports = function (app) {
     authJwt.SaveLogs("Update Password"),
     controller.updatePassword);
 
+    
     app.post("/api/profile/updateProfile",
     [authJwt.verifyToken],
     authJwt.SaveLogs("Update Profile"),
