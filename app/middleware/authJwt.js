@@ -88,12 +88,12 @@ const isStudent = async (req, res, next) => {
 
 
 
-
-const authJwt = {
+ const authJwt = {
     verifyToken,
     isAdmin,
     isTutor,
-    isStudent
+    isStudent,
+   
 };
 
 module.exports = authJwt;
