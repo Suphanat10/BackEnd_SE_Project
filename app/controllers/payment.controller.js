@@ -42,12 +42,7 @@ exports.approve = async (req, res) => {
         const registration_id = req.body.registration_id
         const registration_status = req.body.registration_status
 
-        if(registration_status == 1){
-            return  res.status(200).send({
-                message: "Approve  not complete", 
-                status: false,
-            })
-        }else if(registration_status == 2){
+      if(registration_status == 2){
             const update = await prisma.course_reg.update({
                 where: {
                     registration_id: registration_id
@@ -60,12 +55,6 @@ exports.approve = async (req, res) => {
             message: "Approve complete", 
             status: true,
             })
-        }else{
-             return  res.status(200).send({
-                message: "Approve  not complete", 
-                status: false,
-            })
-
         }
     } catch (error) {
         res.status(500).send({
@@ -74,6 +63,11 @@ exports.approve = async (req, res) => {
         });
     }
 }
+
+
+    
+     
+
 
 
 

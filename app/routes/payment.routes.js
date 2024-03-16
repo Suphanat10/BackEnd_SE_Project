@@ -16,7 +16,7 @@ module.exports = function (app) {
      [authJwt.verifyToken],
      controller.submit_document);
 
-  app.post("/api/course/payment/submit_payment",
+  app.post("/api/course/payment/approve",
       [authJwt.verifyToken],
       controller.approve);
 
