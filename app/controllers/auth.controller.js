@@ -18,7 +18,7 @@ exports.register_by_google = async (req, res) => {
                 code: 403
             });
         }
-        
+
 
         const updateUser = await prisma.users_account.update({
             where: {
@@ -133,7 +133,7 @@ exports.login = async (req, res) => {
         }
     
         var token = jwt.sign({ id: user.user_id }, config.secret, {
-            expiresIn: 86400 // 24 hours
+            expiresIn: 86400 
         });
     
         res.status(200).send({
@@ -160,7 +160,6 @@ exports.login = async (req, res) => {
             code : 500
          });
     }
-
 };
 
 

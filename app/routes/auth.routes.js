@@ -16,6 +16,8 @@ module.exports = function (app) {
 
   app.post("/api/login", controller.login);
   app.post("/api/register",  controller.register);
+  app.post("/api/profile/google", controller.register_by_google);
 
-  
+
+
 };
