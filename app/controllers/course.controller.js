@@ -444,7 +444,8 @@ exports.get_course_by_id = async (req, res) => {
                   users_reg_transfer_document: {
                     select: {
                         transfer_document: true,
-                        comment :true
+                        comment :true,
+                        document_id : true
                     }
                 }
 
