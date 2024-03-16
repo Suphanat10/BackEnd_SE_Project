@@ -38,7 +38,7 @@ exports.updatePassword = async (req, res) => {
 
         if (!passwordIsValid) {
             return res.status(401).send({
-                message: "Invalid Password!",
+                message: "รหัสผ่านไม่ถูกต้อง",
                 code: 401
             });
         }
