@@ -743,6 +743,7 @@ exports.get_lesson = async (req, res) => {
             },
             select: {
                 lesson_name: true,
+                lesson_id: true,
                 course_id: true,
                 lesson_chapter: {
                     select: {
@@ -751,25 +752,24 @@ exports.get_lesson = async (req, res) => {
                         content_type: true
                     }
                 },
-                course_exam: {
-                    select: {
-                        exam_name: true,
-                        exam_id: true,
-                        course_exam_problem: {
-                            select: {
-                                problem_name: true,
-                                problem_id: true,
-                                course_exam_choices: true
-                            }
-                        }
-                    }
-                }
+             
+
+            
             }
         });
         
         if (!content) {
             return res.status(404).send([]);
         }
+   
+        // const reg_ans = await prisma.course_exam.findFirst({
+        //     where: {
+            
+        //     }
+        // });
+    
+
+
 
         res.status(200).send(content);
     } catch (e) {

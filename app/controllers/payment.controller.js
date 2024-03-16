@@ -34,7 +34,7 @@ exports.approve = async (req, res) => {
     try {
         const registration_id = req.body.registration_id
         const registration_status = req.body.registration_status
-        
+
         if(registration_status == 1){
             const update_status = await prisma.course_reg.update({
                 data:{

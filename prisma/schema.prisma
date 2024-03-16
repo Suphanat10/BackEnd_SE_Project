@@ -42,7 +42,6 @@ model course_exam_choices {
   problem_id          Int?
   label               String?              @db.Text
   course_exam_problem course_exam_problem? @relation(fields: [problem_id], references: [problem_id], onDelete: Restrict, onUpdate: Restrict, map: "course_exam_choices_ibfk_1")
-  reg_exam_ans        reg_exam_ans[]
 
   @@index([problem_id], map: "problem_id")
 }
@@ -71,15 +70,16 @@ model course_lesson {
 }
 
 model course_reg {
-  registration_id     Int            @id @default(autoincrement())
-  course_id           Int?
-  user_id             Int?
-  registration_status Int?
-  transfer_document   String?        @db.VarChar(255)
-  completion_status   Int?
-  course              course?        @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_reg_ibfk_1")
-  users_account       users_account? @relation(fields: [user_id], references: [user_id], onDelete: Restrict, onUpdate: Restrict, map: "course_reg_ibfk_2")
-  reg_exam_ans        reg_exam_ans[]
+  registration_id             Int                           @id @default(autoincrement())
+  course_id                   Int?
+  user_id                     Int?
+  registration_status         Int?
+  transfer_document           String?                       @db.VarChar(255)
+  completion_status           Int?
+  course                      course?                       @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_reg_ibfk_1")
+  users_account               users_account?                @relation(fields: [user_id], references: [user_id], onDelete: Restrict, onUpdate: Restrict, map: "course_reg_ibfk_2")
+  reg_exam_ans                reg_exam_ans[]
+  users_reg_transfer_document users_reg_transfer_document[]
 
   @@index([course_id], map: "course_id")
   @@index([user_id], map: "user_id")
@@ -110,11 +110,9 @@ model reg_exam_ans {
   select_choice          Int?
   course_reg             course_reg?          @relation(fields: [registration_id], references: [registration_id], onDelete: Restrict, onUpdate: Restrict, map: "reg_exam_ans_ibfk_1")
   course_exam_problem    course_exam_problem? @relation(fields: [problem_id], references: [problem_id], onDelete: Restrict, onUpdate: Restrict, map: "reg_exam_ans_ibfk_2")
-  course_exam_choices    course_exam_choices? @relation(fields: [select_choice], references: [choices_id], onDelete: Restrict, onUpdate: Restrict, map: "reg_exam_ans_ibfk_3")
 
   @@index([problem_id], map: "problem_id")
   @@index([registration_id], map: "registration_id")
-  @@index([select_choice], map: "select_choice")
 }
 
 model users_account {
@@ -131,4 +129,14 @@ model users_account {
   google_id     String?      @db.VarChar(255)
   course        course[]
   course_reg    course_reg[]
+}
+
+model users_reg_transfer_document {
+  document_id     Int         @id @default(autoincrement())
+  image           String?     @db.VarChar(255)
+  comment         String?     @db.VarChar(255)
+  registration_id Int?
+  course_reg      course_reg? @relation(fields: [registration_id], references: [registration_id], onDelete: NoAction, onUpdate: NoAction, map: "users_reg_transfer_document_ibfk_1")
+
+  @@index([registration_id], map: "registration_id")
 }
