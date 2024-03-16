@@ -9,6 +9,19 @@ exports.getProfile = async (req, res) => {
         const user = await prisma.users_account.findUnique({
             where: {
                 user_id: user_id
+            },
+            select: {
+                user_id: true,
+                prefix: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                image: true,
+                permission_id: true,
+                gender:true,
+                image:true,
+                username:true,
+                google_id:true
             }
         });
 
