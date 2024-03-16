@@ -22,7 +22,7 @@ app.listen(PORT, () => {
 
 
 
-app.use("/api/public",express.static('./app/image/courseimage'));
+app.use("/api/public",express.static('./app/image/course'));
 app.use("/api/profile/img",express.static('./app/image/profile'));
 
 

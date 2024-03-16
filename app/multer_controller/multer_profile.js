@@ -30,19 +30,20 @@ var storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     if (file.originalname) {
-      cb(null, `${Date.now() + makeid(8)}_Course${path.extname(file.originalname)}`);
+      cb(null, `${Date.now() + makeid(8)}_Profile${path.extname(file.originalname)}`);
     } else {
-      cb(null, `${Date.now() + makeid(8)}_E-Learning_IMG.jpeg`);
+      cb(null, `${Date.now() + makeid(8)}_Profile_IMG.jpeg`);
     }
   },
 });
 
-var upload = multer({
+
+var upload_profile = multer({
   storage: storage,
   limits: { fileSize: maxSize },
   fileFilter: imageFilter,
 });
-module.exports = upload;
+module.exports = upload_profile;
 
 
 

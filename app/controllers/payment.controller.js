@@ -9,7 +9,7 @@ exports.submit_document = async (req, res) => {
         const  registration_id = req.body.registration_id;
 
 
-        const submit = await prisma.course_reg.update({
+        const submit = await prisma.users_reg_transfer_document.update({
             where: {
                 registration_id:registration_id
             },
@@ -66,7 +66,9 @@ exports.reject = async (req, res) => {
     try {
         const registration_id = req.body.registration_id
         const  comment = req.body.comment;
-        
+
+
+
 
          
         

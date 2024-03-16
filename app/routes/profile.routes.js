@@ -2,7 +2,8 @@ const controller = require("../controllers/profile.controller");
 const { authJwt } = require("../middleware");
 const express = require('express')
 const multer  = require('multer')
-const upload = require("../multer_controller/multer");
+const upload_profile = require("../multer_controller/multer_profile");
+
 
 
 
@@ -42,7 +43,7 @@ module.exports = function (app) {
 
     app.post("/api/profile/upload_img",
     [authJwt.verifyToken],
-    upload.single('file'),
+    upload_profile.single('file'),
     authJwt.SaveLogs("อัพโหลดรูปภาพ Profile"),
     controller.upuploadImage);
 

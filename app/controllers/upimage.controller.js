@@ -13,6 +13,22 @@ exports.upload_course = async (req, res) => {
   };
 
 
+exports.upload_profile = async (req, res) => {
+    res.status(200).send({
+      status: true,
+      image :req.file.filename
+    });
+  };
+
+
+  exports.upload_slip = async (req, res) => {
+    res.status(200).send({
+      status: true,
+      image :req.file.filename
+    });
+  };
+  
+
 
 
 
