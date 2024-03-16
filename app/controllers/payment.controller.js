@@ -64,26 +64,30 @@ exports.approve = async (req, res) => {
 
 exports.reject = async (req, res) => {
     try {
-        const registration_id = req.body.registration_id
-        const  comment = req.body.comment;
-
-        const update = await prisma.users_reg_transfer_document.update({
+        const registration_id = req.body.registration_id;
+        const comment = req.body.comment;
+        
+        const data = await prisma.users_reg_transfer_document.findFirst({
             where: {
                 registration_id: registration_id
-            },
-            data: {
-                registration_status: 0
             }
         });
-
-
-
-
-
-
-         
         
-    
+        if (data && data.comment === null) {
+            const update = await prisma.users_reg_transfer_document.updateMany({
+                where: {
+                    registration_id: registration_id
+                },
+                data: {
+                    comment: comment
+                }
+            });
+            return res.status(200).send({
+                message: "Reject complete",
+                status: true
+            });
+        }
+        
     } catch (error) {
         res.status(500).send({
             message: error.message,

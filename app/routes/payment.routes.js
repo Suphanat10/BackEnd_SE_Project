@@ -22,11 +22,11 @@ module.exports = function (app) {
       controller.approve);
 
   app.post("/api/course/payment/reject",
-      [authJwt.verifyToken],
+      // [authJwt.verifyToken],
       authJwt.SaveLogs("ปฏิเสธการชำระเงิน"),
       controller.reject);
 
-      
+
 
   
 }
