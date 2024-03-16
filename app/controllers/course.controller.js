@@ -622,49 +622,47 @@ exports.get_mycourse = async (req, res) => {
         if (users.permission_id == 1) {
             const course = await prisma.course.findMany({
                 where: {
-                  course_reg: {
-                    some: {
-                      user_id: user_id
+                    course_reg: {
+                        some: {
+                            user_id: user_id
+                        }
                     }
-                  }
                 },
                 select: {
-                  course_id: true,
-                  course_name: true,
-                  course_description: true,
-                  course_visibility: true,
-                  image: true,
-                  cost: true,
-                  course_lesson: {
-                    select: {
-                      lesson_name: true,
-                      lesson_id: true
-                    }
-                  },
-                  users_account: {
-                    select: {
-                      prefix: true,
-                      first_name: true,
-                      last_name: true
-                    }
-                },
-                users_reg_transfer_document: {
-                    select: {
-                        transfer_document: true,
-                        comment: true
-                    }
-                },
+                    course_id: true,
+                    course_name: true,
+                    course_description: true,
+                    course_visibility: true,
+                    image: true,
+                    cost: true,
+                    course_lesson: {
+                        select: {
+                            lesson_name: true,
+                            lesson_id: true
+                        }
+                    },
+                    users_account: {
+                        select: {
+                            prefix: true,
+                            first_name: true,
+                            last_name: true
+                        }
+                    },
                     course_reg: {
+                        select: {
+                            users_reg_transfer_document: {
+                                select: {
+                                    transfer_document: true
+                                }
+                            }
+                        },
                         where: {
                             user_id: user_id
                         }
                     }
                 }
-                
-
-
-              });
-              
+            });
+            
 
             if (!course) {
                 return res.status(200).send([]);
