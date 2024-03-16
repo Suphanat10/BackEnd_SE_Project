@@ -648,12 +648,21 @@ exports.get_mycourse = async (req, res) => {
                       last_name: true
                     }
                 },
+                users_reg_transfer_document: {
+                    select: {
+                        transfer_document: true,
+                        comment: true
+                    }
+                },
                     course_reg: {
                         where: {
                             user_id: user_id
                         }
                     }
                 }
+                
+
+
               });
               
 

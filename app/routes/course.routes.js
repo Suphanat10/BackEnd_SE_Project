@@ -76,7 +76,7 @@ module.exports = function (app) {
 
   app.get("/api/course/mycourse",
  [ authJwt.verifyToken],
- authJwt.SaveLogs("เรียกข้อมูลคอร์สที่ลงทะเบียน"),
+
     controller.get_mycourse);
 
 
