@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 
 exports.updatePassword = async (req, res) => {
     try{
-        const user_id = req.body.user_id;
+        const user_id = req.user_id;
         const password = req.body.password;
         const new_password = req.body.new_password;
 

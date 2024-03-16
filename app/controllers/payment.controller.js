@@ -30,35 +30,40 @@ exports.submit_document = async (req, res) => {
 }
 
 
+
+// 0 ไม่สำเร็จ
+// 1 ลงแล้วแต่ยังไม่จ่ายตั้ง
+// 2 จ่ายตังแล้ว
 exports.approve = async (req, res) => {
     try {
         const registration_id = req.body.registration_id
         const registration_status = req.body.registration_status
 
         if(registration_status == 1){
-            const update_status = await prisma.course_reg.update({
-                data:{
-                    registration_status:1
-                },where:{
-                    registration_id:registration_id
-                }
+            return  res.status(200).send({
+                message: "Approve  not complete", 
+                status: false,
             })
-            res.status(200).send({
-                message: "Approve complete",
-                code: 200
+        }else if(registration_status == 2){
+            const update = await prisma.course_reg.update({
+                where: {
+                    registration_id: registration_id
+                },
+                data: {
+                    registration_status: 2
+                }
+            });
+            return  res.status(200).send({
+            message: "Approve complete", 
+            status: true,
             })
         }else{
-            const delete_fail_document = await prisma.course_reg.delete({
-                where:{
-                    registration_id:registration_id
-                }
+             return  res.status(200).send({
+                message: "Approve  not complete", 
+                status: false,
             })
-            res.status(200).send({
-                message: "Approve not complete, Transfer document not correct",
-                code: 200
-            })
-        }
 
+        }
     } catch (error) {
         res.status(500).send({
             message: error.message,
