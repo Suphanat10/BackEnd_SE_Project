@@ -32,7 +32,7 @@ module.exports = function (app) {
     controller.get_course_exam);
 
 
-    app.get("/api/exam/getExam/question/:exam_id", 
+    app.get("/api/course/exam/getExam/question/:exam_id", 
     controller.get_exam_question_choice_by_exam);
 
     app.put("/api/course/exam/update/course_exam",
