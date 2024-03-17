@@ -104,7 +104,6 @@ exports.course_lesson_content = async (req, res) => {
     const lesson_id = req.body.lesson_id;
     const content_data = req.body.content_data;
     const content_type = req.body.content_type;
-    const user_id = req.user_id;
     const content_name = req.body.content_name;
 
 
