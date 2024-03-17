@@ -3,34 +3,34 @@ const prisma = new PrismaClient();
 
 exports.get_course_exam = async (req, res) => {
   try {
-    const course_id = parseInt(req.params.course_id);
+    const lesson_id = parseInt(req.params.lesson_id);
+    const user_id = req.user_id;
 
-    if (!course_id) {
+
+    if (!lesson_id) {
       return res.status(400).send({
-        message: "Course ID is required!",
+        message: "Lesson ID is required!",
         code: 400,
       });
     }
 
-    const existingCourse = await prisma.course.findFirst({
-      where: {
-        course_id: course_id,
-      },
-    });
+    
 
-    if (!existingCourse) {
-      return res.status(404).send({
-        message: "Course is not found!",
-        code: 404,
-      });
-    }
-
-    const courseExam = await prisma.course_exam.findMany({
+    const exam = await prisma.course_exam.findMany({
       where: {
-        course_id: course_id,
-      },
+        lesson_id: lesson_id,
+        course: {
+          instructor: user_id
+        }
+      }
     });
-    res.status(200).send({ courseExam });
+    
+
+     
+
+
+
+    res.status(200).send(exam);
   } catch (err) {
     res.status(500).send({
       message: err.message,

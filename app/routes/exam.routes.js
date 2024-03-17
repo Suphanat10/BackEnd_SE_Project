@@ -17,17 +17,17 @@ module.exports = function (app) {
     // [authJwt.verifyToken, authJwt.isTutor],
     controller.create_course_exam);
 
-    app.post("/api/exam/createQuestion",
+    app.post("/api/course/exam/createQuestion",
     // [authJwt.verifyToken, authJwt.isTutor],
 
     controller.create_exam_question);
 
-    app.post("/api/exam/createChoice",
+    app.post("/api/course/exam/createChoice",
     // [authJwt.verifyToken, authJwt.isTutor],
     controller.create_exam_choices);
 
 
-    app.get("/api/exam/getExam/by_course/:course_id", 
+    app.get("/api/course/getExam/:lesson_id", 
     [authJwt.verifyToken,],
     controller.get_course_exam);
 
@@ -35,21 +35,21 @@ module.exports = function (app) {
     app.get("/api/exam/getExam/:exam_id", 
     controller.get_exam_question_choice_by_exam);
 
-    app.put("/api/exam/update/course_exam",
+    app.put("/api/course/exam/update/course_exam",
     // [authJwt.verifyToken, authJwt.isTutor],
     controller.update_create_course_exam);
 
-    app.put("/api/exam/updateQuestion",
+    app.put("/api/course/exam/updateQuestion",
     // [authJwt.verifyToken, authJwt.isTutor],
     controller.update_create_exam_question);
 
 
-    app.put("/api/exam/updateChoice",
+    app.put("/api/course/exam/updateChoice",
     // [authJwt.verifyToken, authJwt.isTutor],
     controller.update_create_exam_choices);
 
 
-    app.delete("/api/exam/deleteExam/:exam_id",
+    app.delete("/api/course/exam/deleteExam/:exam_id",
     // [authJwt.verifyToken, authJwt.isTutor],
     controller.delete_exam);
 
