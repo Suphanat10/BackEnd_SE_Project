@@ -20,37 +20,41 @@ module.exports = function (app) {
 
 
     app.post("/api/course/createLesson", 
-    // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+    [authJwt.verifyToken],
+    authJwt.SaveLogs("สร้างบทเรียนใหม่"),
     controller.course_lesson);
 
     app.post("/api/course/createContent",
-    // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+    [authJwt.verifyToken],
+    authJwt.SaveLogs("สร้างเนื้อหาบทเรียนใหม่"),
      controller.course_lesson_content);
 
   app.get("/api/course/getCourse", 
-  
   controller.get_course);
   
 
   app.get("/api/course/getCourseContent/:id",
-  // [authJwt.verifyToken],
+  [authJwt.verifyToken],
    controller.get_lesson);
 
   app.get("/api/course/getCourse/:id",
-  //  [authJwt.verifyToken],
+   [authJwt.verifyToken],
    controller.get_course_by_id);
   
 
   app.post("/api/course/updateCourse", 
   [authJwt.verifyToken],
+  authJwt.SaveLogs("เเก้ไขคอร์สเรียน"),
   controller.update_course);
 
   app.post("/api/course/updateLesson",
-  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+  [authJwt.verifyToken],
+  authJwt.SaveLogs("เเก้ไขบทเรียน"),
    controller.update_lesson);
 
   app.post("/api/course/updateContent", 
-  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+  [authJwt.verifyToken],
+  authJwt.SaveLogs("เเก้ไขเนื้อหาบทเรียน"),
   controller.update_content);
 
 
@@ -76,7 +80,6 @@ module.exports = function (app) {
 
   app.get("/api/course/mycourse",
  [ authJwt.verifyToken],
-
     controller.get_mycourse);
 
 

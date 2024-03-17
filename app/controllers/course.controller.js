@@ -417,13 +417,24 @@ exports.delete_content = async (req, res) => {
 }
 
 
+
+
 exports.get_course_by_id = async (req, res) => {
     try {
         const course_id = parseInt(req.params.id);
+        const user_id = req.user_id;
+
+        if (!course_id) {
+            return res.status(400).send({
+                message: "Course ID is required!",
+                code: 400
+            });
+        }
 
         const course = await prisma.course.findFirst({
             where: {
-              course_id: course_id
+              course_id: course_id,
+              instructor : user_id
             },
             include: {
               course_lesson: {
@@ -454,8 +465,6 @@ exports.get_course_by_id = async (req, res) => {
               }
             }
           });
-          
-          
 
         if (!course) {
             return res.status(404).send({
@@ -474,44 +483,6 @@ exports.get_course_by_id = async (req, res) => {
     }
 }
 
-// exports.get_course_by_id = async (req, res) => {
-//     try {
-//         const course_id = parseInt(req.params.id);
-
-//         const course = await prisma.course.findFirst({
-//             where: {
-//                 course_id: course_id
-//             },
-//             select: {
-//                 course_id: true,
-//                 course_name: true,
-//                 course_description: true,
-//                 course_visibility: true,
-//                 course_lesson: {
-//                     select: {
-//                         lesson_name : true,
-//                         lesson_id : true,
-//                     }
-//                 }
-//             }
-//         });
-
-//         if(!course){
-//             return res.status(404).send({
-//                 message: "Course is not found!",
-//                 code: 404
-//             });
-//         }
-
-//         res.status(200).send(course);
-//     }
-//     catch (err) {
-//         res.status(500).send({
-//             message: err.message,
-//             code: 500
-//         });
-//     }
-// }
 
 
 
@@ -553,7 +524,6 @@ exports.regis_course = async (req, res) => {
                 course_id: course_id
             }
         });
-
 
         if (!checkcourse) {
             return res.status(404).send({
@@ -605,10 +575,6 @@ exports.regis_course = async (req, res) => {
                 registration_status: 1,
                 code: 200
             });
-
-
-
-
         }
     } catch (error) {
         res.status(500).send({
@@ -676,9 +642,6 @@ exports.get_mycourse = async (req, res) => {
                 }
             });
             
-            
-            
-
             if (!course) {
                 return res.status(200).send([]);
             }
@@ -710,57 +673,9 @@ exports.get_mycourse = async (req, res) => {
                             last_name: true,
                         }
                     },
-                    // course_reg: {
-                    //     select: {
-                    //         registration_status: true,
-                    //         completion_status: true,
-        
-                    //         users_reg_transfer_document: {
-                    //             select: {
-                    //                 transfer_document: true,
-                    //                 comment :true
-                    //             }
-                    //         }
-                    //     }
-                    // }
                 }
 
             });
-
-
-            //  const course = await prisma.course.findMany({
-            //     where: {
-            //         instructor: user_id
-            //     },
-            //     select: {
-            //         course_id: true,
-            //         course_name: true,
-            //         course_description: true,
-            //         course_visibility: true,
-            //         image: true,
-            //         cost: true,
-            //         course_lesson: {
-            //             select: {
-            //                 lesson_name: true,
-            //                 lesson_id: true,
-            //             }
-            //         },
-            //         users_account: {
-            //             select: {
-            //                 prefix: true,
-            //                 first_name: true,
-            //                 last_name: true,
-            //             }
-            //         }
-
-            //     }
-            // });
-                   
-
-
-
-        
-
             if (!course) {
                 return res.status(200).send([]);
             }

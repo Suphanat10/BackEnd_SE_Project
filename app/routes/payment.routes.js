@@ -14,6 +14,7 @@ module.exports = function (app) {
 
   app.post("/api/course/payment/submit_document", 
      [authJwt.verifyToken],
+      authJwt.SaveLogs("ส่งหลักฐานการชำระเงิน"),
      controller.submit_document);
 
   app.post("/api/course/payment/approve",
@@ -22,7 +23,7 @@ module.exports = function (app) {
       controller.approve);
 
   app.post("/api/course/payment/reject",
-      // [authJwt.verifyToken],
+      [authJwt.verifyToken],
       authJwt.SaveLogs("ปฏิเสธการชำระเงิน"),
       controller.reject);
 

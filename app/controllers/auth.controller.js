@@ -8,9 +8,9 @@ const prisma = new PrismaClient()
 
 exports.delete_google = async (req, res) => {
     try {
-        const  user_id = req.user_id;
+        const user_id = req.user_id;
 
-        const  updateUser = await prisma.users_account.update({
+        const updateUser = await prisma.users_account.update({
             where: {
                 user_id: user_id
             },
@@ -48,9 +48,9 @@ exports.register_by_google = async (req, res) => {
     try {
         const google_id = req.body.google_id;
         const email = req.body.google_email;
-        const  user_id = req.user_id;
+        const user_id = req.user_id;
 
-        if(!google_id){
+        if (!google_id) {
             return res.status(403).send({
                 message: "Google ID is required!",
                 code: 403
@@ -94,8 +94,8 @@ exports.register_by_google = async (req, res) => {
 exports.login_by_google = async (req, res) => {
     try {
         const google_id = req.body.google_id;
-     
-        
+
+
         const user = await prisma.users_account.findFirst({
             where: {
                 google_id: google_id
@@ -103,7 +103,7 @@ exports.login_by_google = async (req, res) => {
         })
 
 
-       
+
         if (!user) {
             return res.status(404).send({
                 message: "User Not found.",
@@ -119,8 +119,8 @@ exports.login_by_google = async (req, res) => {
             id: user.user_id,
             name: user.prefix + " " + user.first_name + " " + user.last_name,
             email: user.email,
-            gender: user.gender, 
-            permission : user.permission_id,
+            gender: user.gender,
+            permission: user.permission_id,
             accessToken: token
         });
 
@@ -147,27 +147,27 @@ exports.login_by_google = async (req, res) => {
 
 
 exports.login = async (req, res) => {
-    try{
+    try {
         const username = req.body.username;
         const password = req.body.password;
-    
+
         const user = await prisma.users_account.findUnique({
             where: {
                 username: username
             }
         })
         if (!user) {
-            return res.status(404).send({ 
+            return res.status(404).send({
                 message: "User Not found.",
-                code : 404
-             });
+                code: 404
+            });
         }
-    
+
         var passwordIsValid = bcrypt.compareSync(
             password,
             user.password
         );
-    
+
         if (!passwordIsValid) {
             return res.status(401).send({
                 accessToken: null,
@@ -175,17 +175,17 @@ exports.login = async (req, res) => {
                 message: "Invalid Password!"
             });
         }
-    
+
         var token = jwt.sign({ id: user.user_id }, config.secret, {
-            expiresIn: 86400 
+            expiresIn: 86400
         });
-    
+
         res.status(200).send({
             id: user.user_id,
             name: user.prefix + " " + user.first_name + " " + user.last_name,
             email: user.email,
-            gender: user.gender, 
-            permission : user.permission_id,
+            gender: user.gender,
+            permission: user.permission_id,
             accessToken: token
         });
 
@@ -197,12 +197,12 @@ exports.login = async (req, res) => {
                 timestamp: new Date()
             }
         })
-    
+
     } catch (err) {
-        res.status(500).send({ 
+        res.status(500).send({
             message: err.message || "Some error occurred while login the User.",
-            code : 500
-         });
+            code: 500
+        });
     }
 };
 
@@ -219,21 +219,21 @@ exports.register = async (req, res) => {
         const gender = req.body.gender;
         const permission_id = req.body.permission_id;
 
-    
-        if (!password || !username || !confirm_password || !prefix || !first_name || !last_name || !email || !permission_id ||!gender)  {
+
+        if (!password || !username || !confirm_password || !prefix || !first_name || !last_name || !email || !permission_id || !gender) {
             return res.status(403).send({
                 message: "All field is required!",
-                code : 403
+                code: 403
             });
         }
 
         if (password !== confirm_password) {
-            return res.status(403).send({ 
+            return res.status(403).send({
                 message: "Password and Confirm Password are not match!",
-                code : 403
-             });
+                code: 403
+            });
         }
-        
+
         const checkUsername = await prisma.users_account.findUnique({
             where: {
                 username: username,
@@ -241,11 +241,11 @@ exports.register = async (req, res) => {
         })
 
         if (checkUsername) {
-            return res.status(403).send({ 
+            return res.status(403).send({
                 message: "Username is already in use!",
-                code : 403
+                code: 403
 
-             });
+            });
         }
 
         const createUser = await prisma.users_account.create({
@@ -257,40 +257,40 @@ exports.register = async (req, res) => {
                 username: username,
                 password: bcrypt.hashSync(password, 8),
                 permission_id: permission_id,
-                gender:gender
+                gender: gender
 
             }
         })
 
         var token = jwt.sign({ id: createUser.user_id }, config.secret, {
-            expiresIn: 86400 
+            expiresIn: 86400
         });
 
-          res.status(200).send({ 
+        res.status(200).send({
             message: "User was registered successfully!",
             id: createUser.user_id,
             name: createUser.prefix + " " + createUser.first_name + " " + createUser.last_name,
             email: createUser.email,
-            gender: createUser.gender, 
-            permission : createUser.permission_id,
+            gender: createUser.gender,
+            permission: createUser.permission_id,
             accessToken: token
-            });
+        });
 
-            const saveLogs = await prisma.logs.create({
-                data: {
-                    log_description: "ลงทะเบียนผู้ใช้งานใหม่",
-                    user_id: createUser.user_id,
-                    ip_address: req.ip,
-                    timestamp: new Date()
-                }
-            })
+        const saveLogs = await prisma.logs.create({
+            data: {
+                log_description: "ลงทะเบียนผู้ใช้งานใหม่",
+                user_id: createUser.user_id,
+                ip_address: req.ip,
+                timestamp: new Date()
+            }
+        })
 
     }
     catch (err) {
-        res.status(500).send({ 
+        res.status(500).send({
             message: err.message || "Some error occurred while creating the User.",
-            code : 500
-         });
+            code: 500
+        });
     }
 };
 
