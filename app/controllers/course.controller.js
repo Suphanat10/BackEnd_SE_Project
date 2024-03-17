@@ -765,3 +765,46 @@ exports.get_lesson = async (req, res) => {
     }
 }
 
+
+
+exports.get_course_lesson = async (req, res) => {
+    try {
+      const course_id = parseInt(req.params.course_id);
+      const user_id = parseInt(req.user_id);
+  
+      if (!course_id) {
+        return res.status(400).send({
+          message: "Course ID is required!",
+          code: 400,
+        });
+      }
+  
+      const existingCourse = await prisma.course.findFirst({
+        where: {
+          course_id: course_id,
+          instructor: user_id, // Change instructor_id to instructor
+        },
+      });
+  
+      if (!existingCourse) {
+        return res.status(404).send({
+          message: "Course is not found!",
+          code: 404,
+        });
+      }
+  
+      const courseLesson = await prisma.course_lesson.findMany({
+        where: {
+          course_id: course_id,
+        },
+      });
+      
+      res.status(200).send({ courseLesson });
+    } catch (err) {
+      res.status(500).send({
+        message: err.message,
+        code: 500,
+      });
+    }
+  };
+  
