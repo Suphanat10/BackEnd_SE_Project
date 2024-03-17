@@ -60,12 +60,14 @@ module.exports = function (app) {
 
 
   app.delete("/api/course/delete/course_lesson/:id",
-  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+  [authJwt.verifyToken],
+  authJwt.SaveLogs("ลบบทเรียน"),
    controller.delete_course_lesson);
 
 
   app.delete("/api/course/delete/course_content/:id",
-  // [authJwt.verifyToken, authJwt.isTutor, authJwt.isAdmin],
+  [authJwt.verifyToken],
+  authJwt.SaveLogs("ลบเนื้อหาบทเรียน"),
    controller.delete_content);
 
 
