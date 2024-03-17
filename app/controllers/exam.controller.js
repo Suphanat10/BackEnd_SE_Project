@@ -13,9 +13,6 @@ exports.get_course_exam = async (req, res) => {
         code: 400,
       });
     }
-
-
-
     const exam = await prisma.course_exam.findMany({
       where: {
         lesson_id: lesson_id,
@@ -32,8 +29,6 @@ exports.get_course_exam = async (req, res) => {
       }
     });
     
-
-
     res.status(200).send(exam);
   } catch (err) {
     res.status(500).send({
@@ -43,10 +38,40 @@ exports.get_course_exam = async (req, res) => {
   }
 };
 
+
+// exports.create_exam_question_choice = async (req, res) => {
+//   try {
+//     const exam_id = req.body.exam_id;
+//     const problem_name = req.body.problem_name;
+//     const correct_choice = req.body.correct_choice;
+
+//     const problem_id = req.body.problem_id;
+//     const label = req.body.label;
+
+//     if (!exam_id || !problem_name || !correct_choice || !problem_id || !label) {
+//       return res.status(400).send({
+//         message: "Exam ID, problem name, correct choice, problem ID and label are required!",
+//         code: 400,
+//       });
+//     }
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
 exports.get_exam_question_choice_by_exam = async (req, res) => {
   try {
     const exam_id = parseInt(req.params.exam_id);
-    console.log(exam_id);
+   
 
     if (!exam_id) {
       return res.status(400).send({
