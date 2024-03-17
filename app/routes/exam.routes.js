@@ -27,8 +27,13 @@ module.exports = function (app) {
     controller.create_exam_choices);
 
 
-    app.get("/api/exam/getExam/by_course/:course_id", controller.get_course_exam);
-    app.get("/api/exam/getExam/:exam_id", controller.get_exam_question_choice_by_exam);
+    app.get("/api/exam/getExam/by_course/:course_id", 
+    [authJwt.verifyToken,],
+    controller.get_course_exam);
+
+
+    app.get("/api/exam/getExam/:exam_id", 
+    controller.get_exam_question_choice_by_exam);
 
     app.put("/api/exam/update/course_exam",
     // [authJwt.verifyToken, authJwt.isTutor],

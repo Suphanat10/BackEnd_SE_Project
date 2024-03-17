@@ -296,3 +296,49 @@ exports.register = async (req, res) => {
 
 
 
+exports.Forgot_password = async (req, res) => {
+    try {
+        const  username = req.body.username;
+
+        const user = await prisma.users_account.findFirst({
+            where: {
+                username: username
+            }
+        })
+
+        if (!user) {
+            return res.status(404).send({
+                message: "User Not found.",
+                code: 404
+            });
+        }
+
+        /// send email
+        
+     
+
+
+        res.status(200).send({
+            message: "Please check your email to reset password!",
+            code: 200
+        });
+
+        const saveLogs = await prisma.logs.create({
+            data: {
+                log_description: "ลืมรหัสผ่าน",
+                user_id: user.user_id,
+                ip_address: req.ip,
+                timestamp: new Date()
+            }
+        })
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "Some error occurred while reset the password.",
+            code: 500
+        });
+    }
+}
+
+
+

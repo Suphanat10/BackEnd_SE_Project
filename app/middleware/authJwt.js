@@ -19,6 +19,7 @@ const verifyToken = (req, res, next) => {
     });
 }
 
+
 const isAdmin = async (req, res, next) => {
      const user_id =parseInt(req.user_id);
     try {
@@ -40,6 +41,7 @@ const isAdmin = async (req, res, next) => {
     }
 }
 
+
 const isTutor = async (req, res, next) => {
     try {
         const user_id =parseInt(req.user_id);
@@ -55,7 +57,6 @@ const isTutor = async (req, res, next) => {
 
         next();
     } catch (error) {
- 
         return res.status(500).send({ 
             message:error.message,
             code: 500
@@ -104,15 +105,12 @@ const SaveLogs = (log_description) => async (req, res, next) => {
     }
 };
 
-
-
 const authJwt = {
     verifyToken,
     isAdmin,
     isTutor,
     isStudent,
     SaveLogs
-    
 };
 
 module.exports = authJwt;

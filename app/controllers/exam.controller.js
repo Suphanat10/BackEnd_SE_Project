@@ -90,6 +90,7 @@ exports.create_course_exam = async (req, res) => {
   try {
     const course_id = req.body.course_id;
     const exam_name = req.body.exam_name;
+    const lesson_id = req.body.lesson_id;
 
     const existingCourse = await prisma.course.findFirst({
       where: {
@@ -121,6 +122,7 @@ exports.create_course_exam = async (req, res) => {
       data: {
         exam_name: exam_name,
         course_id: course_id,
+        lesson_id: lesson_id,
       },
     });
 

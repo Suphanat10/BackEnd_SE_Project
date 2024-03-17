@@ -327,7 +327,7 @@ exports.update_content = async (req, res) => {
       message: "Content was updated successfully!",
       code: 200,
     });
-    
+
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -760,4 +760,5 @@ exports.get_course_lesson = async (req, res) => {
     });
   }
 };
+
 
