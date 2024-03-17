@@ -749,7 +749,7 @@ exports.get_course_lesson = async (req, res) => {
       }
     });
 
-    res.status(200).send({ courseLessons });
+    res.status(200).send({ courseLesson });
   } catch (err) {
     res.status(500).send({
       message: err.message,
