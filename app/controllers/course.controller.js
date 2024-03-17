@@ -736,7 +736,7 @@ exports.get_course_lesson = async (req, res) => {
       });
     }
 
-    const courseLessons = await prisma.course_lesson.findMany({
+    const courseLesson = await prisma.course_lesson.findMany({
       where: {
         course_id: course_id,
       },
@@ -748,7 +748,7 @@ exports.get_course_lesson = async (req, res) => {
         }
       }
     });
-    
+
     res.status(200).send({ courseLessons });
   } catch (err) {
     res.status(500).send({
