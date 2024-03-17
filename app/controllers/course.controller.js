@@ -671,7 +671,7 @@ exports.get_lesson_chapter = async (req, res) => {
         code: 400,
       });
     }
-    const content = await prisma.course_lesson.findMany({
+    const content = await prisma.course_lesson.findFirst({
       where: {
         lesson_id: lesson_id,
         course: {
