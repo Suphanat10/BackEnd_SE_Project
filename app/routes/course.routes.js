@@ -69,6 +69,7 @@ module.exports = function (app) {
   [authJwt.verifyToken],
   authJwt.SaveLogs("ลบเนื้อหาบทเรียน"),
    controller.delete_content);
+   
 
 
   app.post("/api/course/registerCourse",

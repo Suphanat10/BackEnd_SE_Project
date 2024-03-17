@@ -288,6 +288,7 @@ exports.update_content = async (req, res) => {
   try {
     const lesson_chapter_id = req.body.lesson_chapter_id;
     const content_data = req.body.content_data;
+    const  content_name = req.body.content_name;
     const content_type = req.body.content_type;
 
     if (!lesson_chapter_id || !content_data || !content_type) {
@@ -318,6 +319,7 @@ exports.update_content = async (req, res) => {
       data: {
         content_data: content_data,
         content_type: content_type,
+        content_name: content_name,
       },
     });
 
@@ -325,6 +327,7 @@ exports.update_content = async (req, res) => {
       message: "Content was updated successfully!",
       code: 200,
     });
+    
   } catch (err) {
     res.status(500).send({
       message: err.message,
