@@ -72,7 +72,6 @@ exports.get_exam_question_choice_by_exam = async (req, res) => {
   try {
     const exam_id = parseInt(req.params.exam_id);
    
-
     if (!exam_id) {
       return res.status(400).send({
         message: "Exam ID is required!",
@@ -105,8 +104,16 @@ exports.get_exam_question_choice_by_exam = async (req, res) => {
       where: {
         exam_id: exam_id,
       },
+
+
+
     });
-    res.status(200).send({ examQuestion });
+
+    if(!examQuestion){
+      return res.status(200).send([]);
+    }
+
+    res.status(200).send(examQuestion );
   } catch (err) {
     res.status(500).send({
       message: err.message,

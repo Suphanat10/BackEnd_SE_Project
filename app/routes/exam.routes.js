@@ -33,6 +33,7 @@ module.exports = function (app) {
 
 
     app.get("/api/course/exam/getExam/question/:exam_id", 
+    [authJwt.verifyToken,],
     controller.get_exam_question_choice_by_exam);
 
     app.put("/api/course/exam/update/course_exam",
