@@ -107,6 +107,7 @@ exports.course_lesson_content = async (req, res) => {
     const content_name = req.body.content_name;
 
 
+
     if (!lesson_id || !content_data || !content_type || !content_name) {
       return res.status(400).send({
         message: "Lesson ID, Content Data, and Content Type are required!",
@@ -119,6 +120,7 @@ exports.course_lesson_content = async (req, res) => {
         lesson_id: lesson_id,
       },
     });
+
     if (!existingLesson) {
       return res.status(404).send({
         message: "Lesson is not found!",
@@ -145,6 +147,7 @@ exports.course_lesson_content = async (req, res) => {
     });
   }
 };
+
 
 exports.get_course = async (req, res) => {
   try {
@@ -687,7 +690,9 @@ exports.get_lesson_chapter = async (req, res) => {
             lesson_chapter_id: true,
             content_data: true,
             content_type: true,
+            content_name: true,
           },
+    
         },
       },
     });
@@ -731,13 +736,20 @@ exports.get_course_lesson = async (req, res) => {
       });
     }
 
-    const courseLesson = await prisma.course_lesson.findMany({
+    const courseLessons = await prisma.course_lesson.findMany({
       where: {
         course_id: course_id,
       },
+      include: {
+        _count: {
+          select: {
+            lesson_chapter: true
+          }
+        }
+      }
     });
-
-    res.status(200).send({ courseLesson });
+    
+    res.status(200).send({ courseLessons });
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -745,3 +757,4 @@ exports.get_course_lesson = async (req, res) => {
     });
   }
 };
+
