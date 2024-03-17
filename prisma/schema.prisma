@@ -89,6 +89,7 @@ model lesson_chapter {
   content_data      String?        @db.Text
   content_type      Int?
   lesson_id         Int?
+  content_name      String         @db.VarChar(255)
   course_lesson     course_lesson? @relation(fields: [lesson_id], references: [lesson_id], onDelete: Restrict, onUpdate: Restrict, map: "lesson_chapter_ibfk_1")
 
   @@index([lesson_id], map: "lesson_id")
