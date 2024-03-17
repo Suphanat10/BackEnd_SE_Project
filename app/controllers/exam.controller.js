@@ -14,7 +14,7 @@ exports.get_course_exam = async (req, res) => {
       });
     }
 
-    
+
 
     const exam = await prisma.course_exam.findMany({
       where: {
@@ -22,12 +22,16 @@ exports.get_course_exam = async (req, res) => {
         course: {
           instructor: user_id
         }
+      },
+      include: {
+        _count: {
+          select: {
+            course_exam_problem: true
+          }
+        }
       }
     });
     
-
-     
-
 
 
     res.status(200).send(exam);
