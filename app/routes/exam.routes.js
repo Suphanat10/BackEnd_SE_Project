@@ -13,7 +13,7 @@ module.exports = function (app) {
   });
 
 
-    app.post("/api/exam/createExam",
+    app.post("/api/course/exam/createExam",
     // [authJwt.verifyToken, authJwt.isTutor],
     controller.create_course_exam);
 
