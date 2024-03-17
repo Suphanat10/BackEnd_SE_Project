@@ -104,8 +104,11 @@ exports.course_lesson_content = async (req, res) => {
     const lesson_id = req.body.lesson_id;
     const content_data = req.body.content_data;
     const content_type = req.body.content_type;
+    const user_id = req.user_id;
+    const content_name = req.body.content_name;
 
-    if (!lesson_id || !content_data || !content_type) {
+
+    if (!lesson_id || !content_data || !content_type || !content_name) {
       return res.status(400).send({
         message: "Lesson ID, Content Data, and Content Type are required!",
         code: 400,
@@ -123,14 +126,15 @@ exports.course_lesson_content = async (req, res) => {
         code: 404,
       });
     }
+
     const createContent = await prisma.lesson_chapter.create({
       data: {
         lesson_id: lesson_id,
         content_data: content_data,
         content_type: content_type,
+        content_name: content_name,
       },
     });
-
     res.status(200).send({
       message: "Content was created successfully!",
       code: 200,
