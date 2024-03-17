@@ -8,7 +8,7 @@ exports.create = async (req, res) => {
         const { course_name, course_description, course_visibility, cost } = req.body;
         const instructor = req.user_id;
         const image = req.body.image;
-        const  image_account = req.body.image_account;
+        const image_account = req.body.image_account;
 
 
         if (!course_name || !course_description || !instructor) {
@@ -62,6 +62,8 @@ exports.course_lesson = async (req, res) => {
     try {
         const lesson_name = req.body.lesson_name;
         const course_id = req.body.course_id;
+        const user_id = req.user_id;
+
 
         if (!lesson_name || !course_id) {
             return res.status(400).send({
@@ -70,10 +72,10 @@ exports.course_lesson = async (req, res) => {
             });
         }
 
-
         const existingCourse = await prisma.course.findFirst({
             where: {
-                course_id: course_id
+                course_id: course_id,
+                instructor: user_id
             }
         });
 
@@ -88,6 +90,9 @@ exports.course_lesson = async (req, res) => {
                 lesson_name: lesson_name,
                 course_id: course_id
             }
+
+
+
         });
 
         res.status(200).send({
@@ -191,9 +196,9 @@ exports.update_course = async (req, res) => {
         const image = req.body.image;
         const cost = req.body.cost;
         const image_account = req.body.image_account;
-        
 
-        if (!course_id || !course_name || !course_description ) {
+
+        if (!course_id || !course_name || !course_description) {
             return res.status(400).send({
                 message: "Course ID, Course Name, Course Description, and Course Visibility are required!",
                 code: 400
@@ -230,7 +235,7 @@ exports.update_course = async (req, res) => {
         res.status(200).send({
             message: "Course was updated successfully!",
             code: 200,
-            status : true
+            status: true
         });
     } catch (err) {
         res.status(500).send({
@@ -433,38 +438,38 @@ exports.get_course_by_id = async (req, res) => {
 
         const course = await prisma.course.findFirst({
             where: {
-              course_id: course_id,
-              instructor : user_id
+                course_id: course_id,
+                instructor: user_id
             },
             include: {
-              course_lesson: {
-                select: {
-                  lesson_name: true,
-                  lesson_id: true
-                }
-              },
-              course_reg: {
-                include: {
-                  users_account: {
+                course_lesson: {
                     select: {
-                      prefix: true,
-                      first_name: true,
-                      last_name: true,
+                        lesson_name: true,
+                        lesson_id: true
                     }
-                  },
-                  users_reg_transfer_document: {
-                    select: {
-                        transfer_document: true,
-                        comment :true,
-                        document_id : true
+                },
+                course_reg: {
+                    include: {
+                        users_account: {
+                            select: {
+                                prefix: true,
+                                first_name: true,
+                                last_name: true,
+                            }
+                        },
+                        users_reg_transfer_document: {
+                            select: {
+                                transfer_document: true,
+                                comment: true,
+                                document_id: true
+                            }
+                        }
+
                     }
-                }
 
                 }
-
-              }
             }
-          });
+        });
 
         if (!course) {
             return res.status(404).send({
@@ -489,7 +494,7 @@ exports.get_course_by_id = async (req, res) => {
 exports.regis_course = async (req, res) => {
     try {
         const course_id = req.body.course_id
-        const user_id =  req.user_id;
+        const user_id = req.user_id;
 
 
         if (!course_id || !user_id) {
@@ -631,7 +636,7 @@ exports.get_mycourse = async (req, res) => {
                             users_reg_transfer_document: {
                                 select: {
                                     transfer_document: true,
-                                    comment :true
+                                    comment: true
                                 }
                             }
                         },
@@ -641,14 +646,14 @@ exports.get_mycourse = async (req, res) => {
                     }
                 }
             });
-            
+
             if (!course) {
                 return res.status(200).send([]);
             }
             res.status(200).send(course);
 
         } else if (users.permission_id == 2) {
-           
+
             const course = await prisma.course.findMany({
                 where: {
                     instructor: user_id
@@ -695,7 +700,7 @@ exports.get_mycourse = async (req, res) => {
 exports.get_lesson = async (req, res) => {
     try {
         const course_id = parseInt(req.params.id);
-        const user_id = req.user_id;    
+        const user_id = req.user_id;
 
         if (!course_id) {
             return res.status(400).send({
@@ -716,7 +721,7 @@ exports.get_lesson = async (req, res) => {
                 code: 404
             });
         }
-   
+
         const content = await prisma.course_lesson.findMany({
             where: {
                 course_id: course_id
@@ -732,22 +737,22 @@ exports.get_lesson = async (req, res) => {
                         content_type: true
                     }
                 },
-             
 
-            
+
+
             }
         });
-        
+
         if (!content) {
             return res.status(404).send([]);
         }
-   
+
         // const reg_ans = await prisma.course_exam.findFirst({
         //     where: {
-            
+
         //     }
         // });
-    
+
 
 
 
