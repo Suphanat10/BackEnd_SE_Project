@@ -56,6 +56,12 @@ authJwt.SaveLogs("เเก้ไขชื่อเเบบทดสอบ"),
     [authJwt.verifyToken,],
     controller.get_exam);
 
+    app.post("/api/course/exam/submitAnswer",
+    [authJwt.verifyToken,],
+    authJwt.SaveLogs("เเก้ไขคำถามเเละคำตอบ"),
+    controller.do_Exam);
+
+
 
 
 

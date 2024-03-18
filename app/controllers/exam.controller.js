@@ -99,7 +99,6 @@ exports.create_exam_question_choice = async (req, res) => {
   }
 };
 
-
 exports.update_exam = async (req, res) => {
   try {
     const exam_id = parseInt(req.body.exam_id);
@@ -136,15 +135,8 @@ exports.update_exam = async (req, res) => {
       message: err.message,
       code: 500,
     });
-
   }
 };
-
-
- 
-
-
-
 
 exports.get_exam_question_choice_by_exam = async (req, res) => {
   try {
@@ -377,53 +369,45 @@ exports.delete_exam_choices = async (req, res) => {
   }
 };
 
-exports.get_exm_sut   = async (req, res) => {
-
+exports.get_exm_sut = async (req, res) => {
   try {
-  const exam_id = parseInt(req.params.exam_id);
-  const user_id = req.user_id;
+    const exam_id = parseInt(req.params.exam_id);
+    const user_id = req.user_id;
 
+    const exam = await prisma.course_exam.findFirst({
+      where: {
+        exam_id: exam_id,
+        course: {
+          course_reg: {
+            some: {
+              user_id: user_id,
+            },
+          },
+        },
+      },
+      include: {
+        course_exam_problem: {
+          select: {
+            problem_name: true,
+            problem_id: true,
+            course_exam_choices: true,
+          },
+        },
+      },
+    });
 
-  const exam = await prisma.course_exam.findFirst({
-    where: {
-      exam_id: exam_id,
-      course: {
-        course_reg: {
-          some: {
-            user_id: user_id
-          }
-        }
-      }
-    },
-    include: {
-      course_exam_problem: {
-        select: {
-          problem_name: true,
-          problem_id: true,
-          course_exam_choices: true
-        }
-      }
+    if (!exam) {
+      return res.status(200).send([]);
     }
-  });
-  
 
-  if (!exam) {
-    return res.status(200).send([]);
-  }
-
-  res.status
-  (200).send
-  (exam);
-  }
-
-  catch (err) {
+    res.status(200).send(exam);
+  } catch (err) {
     res.status(500).send({
       message: err.message,
       code: 500,
     });
   }
-}
-
+};
 
 exports.get_exam = async (req, res) => {
   try {
@@ -436,10 +420,10 @@ exports.get_exam = async (req, res) => {
         course: {
           course_reg: {
             some: {
-              user_id: user_id
-            }
-          }
-        }
+              user_id: user_id,
+            },
+          },
+        },
       },
       select: {
         lesson_name: true,
@@ -450,30 +434,31 @@ exports.get_exam = async (req, res) => {
             exam_name: true,
             course_exam_problem: {
               select: {
-                problem_id: true
-              }
-            }
-          }
-        }
-      }
+                problem_id: true,
+              },
+            },
+          },
+        },
+      },
     });
 
-const examsWithProblemCounts = exam.map(course => {
-  const exams = course.course_exam.map(exam => {
-    const examProblems = exam.course_exam_problem.length;
-    return {
-      ...exam,
-      total_problems: examProblems
-    };
-  });
-  return {
-    ...course,
-    course_exam: exams
-  };
-});
+    const examsWithProblemCounts = exam.map((course) => {
+      const exams = course.course_exam.map((exam) => {
+        const examProblems = exam.course_exam_problem.length;
+        return {
+          ...exam,
+          total_problems: examProblems,
+        };
+      });
+      return {
+        ...course,
+        course_exam: exams,
+      };
+    });
 
-  
-    const exam1 = examsWithProblemCounts.filter((item) => item.course_exam.length > 0);
+    const exam1 = examsWithProblemCounts.filter(
+      (item) => item.course_exam.length > 0
+    );
 
     res.status(200).send(exam1);
   } catch (err) {
@@ -484,21 +469,52 @@ const examsWithProblemCounts = exam.map(course => {
   }
 };
 
+exports.do_Exam = async (req, res) => {
+  try {
+    const examData = req.body.exam;
+    const user_id = req.user_id;
 
+    const registration = await prisma.course_reg.findFirst({
+      where: {
+        user_id: req.user_id,
+        course_id: examData.course_id,
+      },
+    });
+    const registration_id = registration.registration_id;
 
- 
+    const reg_exam_ans = await prisma.reg_exam_ans.findMany({
+      where: {
+        registration_id: registration_id,
+      },
+    });
 
+    if (reg_exam_ans.length > 0) {
+      const deleteAnswers = await prisma.reg_exam_ans.deleteMany({
+        where: {
+          registration_id: registration_id,
+        },
+      });
+    }
 
+    for await (const ans of examData.student_do_choice) {
+      const createAnswer = await prisma.reg_exam_ans.create({
+        data: {
+          registration_id: registration_id,
+          problem_id: ans.problem_id,
+          select_choice: ans.select_choice,
+        },
+      });
+    }
 
-
-
-
-
-
-
-  
-
-
-
-
-
+    res.status(200).send({
+      message: "Exam was submitted successfully!",
+      code: 200,
+      registration_id: registration_id,
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+      code: 500,
+    });
+  }
+};
