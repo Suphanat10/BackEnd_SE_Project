@@ -455,15 +455,20 @@ exports.get_exam = async (req, res) => {
       }
     });
 
-    // ทำการนับจำนวน problem_id สำหรับแต่ละ course_exam
-    const examsWithProblemCounts = exam.map(course => {
-      const examProblems = course.course_exam.map(exam => exam.course_exam_problem.length);
-      const totalProblems = examProblems.reduce((acc, count) => acc + count, 0);
-      return {
-        ...course,
-        total_problems: totalProblems
-      };
-    });
+// ทำการนับจำนวน problem_id สำหรับแต่ละ course_exam
+const examsWithProblemCounts = exam.map(course => {
+  const exams = course.course_exam.map(exam => {
+    const examProblems = exam.course_exam_problem.length;
+    return {
+      ...exam,
+      total_problems: examProblems
+    };
+  });
+  return {
+    ...course,
+    course_exam: exams
+  };
+});
 
   
     const exam1 = examsWithProblemCounts.filter((item) => item.course_exam.length > 0);
