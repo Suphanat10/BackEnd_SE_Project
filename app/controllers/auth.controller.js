@@ -103,14 +103,22 @@ exports.login_by_google = async (req, res) => {
       expiresIn: 86400,
     });
 
-    res.status(200).send({
-      id: user.user_id,
-      name: user.prefix + " " + user.first_name + " " + user.last_name,
-      email: user.email,
-      gender: user.gender,
-      permission: user.permission_id,
-      accessToken: token,
-    });
+    res
+      .status(200)
+      .cookie("accessToken", token, {
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 1),
+        httpOnly: false,
+        sameSite: "none",
+        secure: true,
+      })
+      .send({
+        id: user.user_id,
+        name: user.prefix + " " + user.first_name + " " + user.last_name,
+        email: user.email,
+        gender: user.gender,
+        permission: user.permission_id,
+        accessToken: token,
+      });
 
     const saveLogs = await prisma.logs.create({
       data: {
@@ -159,14 +167,22 @@ exports.login = async (req, res) => {
       expiresIn: 86400,
     });
 
-    res.status(200).send({
-      id: user.user_id,
-      name: user.prefix + " " + user.first_name + " " + user.last_name,
-      email: user.email,
-      gender: user.gender,
-      permission: user.permission_id,
-      accessToken: token,
-    });
+    res
+      .status(200)
+      .cookie("accessToken", token, {
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 1),
+        httpOnly: false,
+        sameSite: "none",
+        secure: true,
+      })
+      .send({
+        id: user.user_id,
+        name: user.prefix + " " + user.first_name + " " + user.last_name,
+        email: user.email,
+        gender: user.gender,
+        permission: user.permission_id,
+        accessToken: token,
+      });
 
     const saveLogs = await prisma.logs.create({
       data: {
@@ -250,20 +266,28 @@ exports.register = async (req, res) => {
       expiresIn: 86400,
     });
 
-    res.status(200).send({
-      message: "User was registered successfully!",
-      id: createUser.user_id,
-      name:
-        createUser.prefix +
-        " " +
-        createUser.first_name +
-        " " +
-        createUser.last_name,
-      email: createUser.email,
-      gender: createUser.gender,
-      permission: createUser.permission_id,
-      accessToken: token,
-    });
+    res
+      .status(200)
+      .cookie("accessToken", token, {
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 1),
+        httpOnly: false,
+        sameSite: "none",
+        secure: true,
+      })
+      .send({
+        message: "User was registered successfully!",
+        id: createUser.user_id,
+        name:
+          createUser.prefix +
+          " " +
+          createUser.first_name +
+          " " +
+          createUser.last_name,
+        email: createUser.email,
+        gender: createUser.gender,
+        permission: createUser.permission_id,
+        accessToken: token,
+      });
 
     const saveLogs = await prisma.logs.create({
       data: {
@@ -316,6 +340,21 @@ exports.Forgot_password = async (req, res) => {
   } catch (err) {
     res.status(500).send({
       message: err.message || "Some error occurred while reset the password.",
+      code: 500,
+    });
+  }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("accessToken");
+    res.status(200).send({
+      message: "User was logout successfully!",
+      code: 200,
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while logout the User.",
       code: 500,
     });
   }
