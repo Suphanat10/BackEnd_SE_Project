@@ -767,7 +767,7 @@ exports.get_course_lesson_by_course_id = async (req, res) => {
 
     const course = await prisma.course.findFirst({
       where: {
-        course_id: 10,
+        course_id: course_id
       },
       include: {
         course_lesson: {
