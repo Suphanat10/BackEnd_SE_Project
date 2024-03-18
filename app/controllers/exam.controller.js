@@ -609,7 +609,7 @@ exports.do_Exam = async (req, res) => {
       where: {
         registration_id: registration_id,
         course_exam_problem:{
-          problem_id : examData.student_do_choice[0].problem_id
+          course_id : examData.course_id
         
         }
       },
