@@ -814,9 +814,9 @@ exports.get_Content_study = async (req, res) => {
     const  Content  = await prisma.course_lesson.findFirst({
       where: {
         lesson_id: lesson_id,
-        course: {
-          instructor: user_id,
-        },
+        course_reg:{
+           user_id: user_id
+        }
       },
       include: {
         lesson_chapter: {
