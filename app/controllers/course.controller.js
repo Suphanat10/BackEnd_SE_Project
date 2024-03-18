@@ -106,8 +106,6 @@ exports.course_lesson_content = async (req, res) => {
     const content_type = req.body.content_type;
     const content_name = req.body.content_name;
 
-
-
     if (!lesson_id || !content_data || !content_type || !content_name) {
       return res.status(400).send({
         message: "Lesson ID, Content Data, and Content Type are required!",
@@ -147,7 +145,6 @@ exports.course_lesson_content = async (req, res) => {
     });
   }
 };
-
 
 exports.get_course = async (req, res) => {
   try {
@@ -288,7 +285,7 @@ exports.update_content = async (req, res) => {
   try {
     const lesson_chapter_id = req.body.lesson_chapter_id;
     const content_data = req.body.content_data;
-    const  content_name = req.body.content_name;
+    const content_name = req.body.content_name;
     const content_type = req.body.content_type;
 
     if (!lesson_chapter_id || !content_data || !content_type) {
@@ -450,7 +447,6 @@ exports.get_course_by_id = async (req, res) => {
         },
       },
     });
-
 
     if (!course) {
       return res.status(404).send([]);
@@ -693,7 +689,6 @@ exports.get_lesson_chapter = async (req, res) => {
             content_type: true,
             content_name: true,
           },
-    
         },
       },
     });
@@ -744,10 +739,10 @@ exports.get_course_lesson = async (req, res) => {
       include: {
         _count: {
           select: {
-            lesson_chapter: true
-          }
-        }
-      }
+            lesson_chapter: true,
+          },
+        },
+      },
     });
 
     res.status(200).send({ courseLesson });
@@ -759,64 +754,45 @@ exports.get_course_lesson = async (req, res) => {
   }
 };
 
-
-
 exports.get_course_lesson_by_course_id = async (req, res) => {
   try {
-  const course_id = parseInt(req.params.course_id);
+    const course_id = parseInt(req.params.course_id);
 
-  if (!course_id) {
-    return res.status(400).send({
-      message: "Course ID is required!",
-      code: 400,
+    if (!course_id) {
+      return res.status(400).send({
+        message: "Course ID is required!",
+        code: 400,
+      });
+    }
+
+    const course = await prisma.course.findFirst({
+      where: {
+        course_id: 10,
+      },
+      include: {
+        course_lesson: {
+          select: {
+            lesson_name: true,
+            lesson_id: true,
+            _count: {
+              select: {
+                lesson_chapter: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!course) {
+      return res.status(404).send([]);
+    }
+
+    res.status(200).send(course);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+      code: 500,
     });
   }
-
-  const course = await prisma.course.findFirst({
-    where: {
-      course_id: 10,
-    },
-    include: {
-      course_lesson: {
-        select: {
-          lesson_name: true,
-          lesson_id: true,
-        },
-        _count: {
-          select: {
-            lesson_id: true
-          }
-        }
-      }
-    }
-  });
-  
-  
-    
- 
-
-
-
- 
-  
-  
-  
-    
-
-  if (!course) {
-    return res.status(404).send([]);
-  }
-
-  res.status(200).send(course);
-
-} catch (err) {
-  res.status(500).send({
-    message: err.message,
-    code: 500,
-  });
-}
-}
-
-
-  
-
+};
