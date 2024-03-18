@@ -487,103 +487,6 @@ exports.get_exam = async (req, res) => {
     });
 
     res.status(200).send(lesson_arr);
-
-    // Fetch exams
-    // const exams = await prisma.course_lesson.findMany({
-    //   where: {
-    //     course_id: course_id,
-    //     course: {
-    //       course_reg: {
-    //         some: {
-    //           user_id: user_id,
-    //         },
-    //       },
-    //     },
-    //   },
-    //   select: {
-    //     lesson_name: true,
-    //     lesson_id: true,
-    //     course_exam: {
-    //       select: {
-    //         exam_id: true,
-    //         lesson_id: true,
-    //         exam_name: true,
-    //         course_exam_problem: {
-    //           select: {
-    //             problem_id: true,
-    //             correct_choice: true,
-    //             reg_exam_ans: {
-    //               where: {
-    //                 registration_id: registration_id,
-    //               },
-    //               select: {
-    //                 select_choice: true,
-    //               },
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
-
-    // const examsWithProblemCounts = exams.map((course) => {
-    //   const exams = course.course_exam.map((exam) => {
-    //     const examProblems = exam.course_exam_problem.length;
-    //     return {
-    //       ...exam,
-    //       total_problems: examProblems,
-    //     };
-    //   });
-    //   return {
-    //     ...course,
-    //     course_exam: exams,
-    //   };
-    // });
-
-    // const validExams = examsWithProblemCounts.filter(
-    //   (item) => item.course_exam.length > 0
-    // );
-
-    // const totalScores = [];
-
-    // for await (const exam of validExams) {
-    //   let score = 0;
-    //   for await (const problem of exam.course_exam) {
-    //     for await (const ans of problem.course_exam_problem) {
-    //       if (ans.reg_exam_ans.length > 0) {
-    //         const correctChoice = ans.correct_choice;
-    //         const selectChoice = ans.reg_exam_ans[0].select_choice;
-    //         if (correctChoice === selectChoice) {
-    //           score += 1;
-    //         }
-    //       }
-    //     }
-    //   }
-    //   totalScores.push({
-
-    //     exam_id: exam.course_exam[0].exam_id,
-    //     score: score,
-    //   });
-    // }
-
-    // for await (const exam of validExams) {
-    //   for await (const problem of exam.course_exam) {
-    //     delete problem.course_exam_problem;
-    //   }
-    // }
-
-    // for await (const exam of validExams) {
-    //   for await (const score of totalScores) {
-    //     for await (const course_exam of exam.course_exam) {
-    //       if (course_exam.exam_id === score.exam_id) {
-    //         course_exam.score = score.score;
-    //       }
-    //     }
-    //   }
-    // }
-
-    // res.status(200).send(validExams,);
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -605,37 +508,26 @@ exports.do_Exam = async (req, res) => {
     });
     const registration_id = registration.registration_id;
 
-    const reg_exam_ans = await prisma.reg_exam_ans.findMany({
+    // Delete All reg_exam_ans
+    await prisma.reg_exam_ans.deleteMany({
       where: {
         registration_id: registration_id,
-        course_exam_problem:{
-          exam_id : examData.exam_id
-        
-        }
+        problem_id: {
+          in: examData.student_do_choice.map((item) => item.problem_id),
+        },
       },
     });
 
-     
-    if (reg_exam_ans.length > 0) {
-      const deleteAnswers = await prisma.reg_exam_ans.deleteMany({
-        where: {
+    // Create
+    await prisma.reg_exam_ans.createMany({
+      data: examData.student_do_choice.map((item) => {
+        return {
           registration_id: registration_id,
-           course_exam_problem:{
-          problem_id : examData.student_do_choice[0].problem_id
-        }
-        },
-      });
-    }
-
-    for await (const ans of examData.student_do_choice) {
-      const createAnswer = await prisma.reg_exam_ans.create({
-        data: {
-          registration_id: registration_id,
-          problem_id: ans.problem_id,
-          select_choice: ans.select_choice,
-        },
-      });
-    }
+          problem_id: item.problem_id,
+          select_choice: item.select_choice,
+        };
+      }),
+    });
 
     res.status(200).send({
       message: "Exam was submitted successfully!",

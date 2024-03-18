@@ -1,12 +1,8 @@
 const controller = require("../controllers/profile.controller");
 const { authJwt } = require("../middleware");
-const express = require('express')
-const multer  = require('multer')
+const express = require("express");
+const multer = require("multer");
 const upload_profile = require("../multer_controller/multer_profile");
-
-
-
-
 
 module.exports = function (app) {
   app.use(function (req, res, next) {
@@ -17,46 +13,39 @@ module.exports = function (app) {
     next();
   });
 
-
-  app.get("/api/profile/getProfile",
+  app.get(
+    "/api/profile/getProfile",
     [authJwt.verifyToken],
     // authJwt.SaveLogs("เรียกข้อมูลส่วนตัว"),
-    controller.getProfile);
+    controller.getProfile
+  );
 
-
-    app.post("/api/profile/updatePassword", 
+  app.post(
+    "/api/profile/updatePassword",
     [authJwt.verifyToken],
     authJwt.SaveLogs("เเก้ไขรหัสผ่าน"),
-    controller.updatePassword);
+    controller.updatePassword
+  );
 
-    
-    app.post("/api/profile/updateProfile",
+  app.post(
+    "/api/profile/updateProfile",
     [authJwt.verifyToken],
     authJwt.SaveLogs("เเก้ไขข้อมูลส่วนตัว"),
     controller.updateProfile
-);
+  );
 
-    app.get("/api/profile/get_img",
+  app.get(
+    "/api/profile/get_img",
     [authJwt.verifyToken],
     // authJwt.SaveLogs("เรียกรูปภาพ Profile"),
-    controller.get_img);
+    controller.get_img
+  );
 
-    app.post("/api/profile/upload_img",
+  app.post(
+    "/api/profile/upload_img",
     [authJwt.verifyToken],
-    upload_profile.single('file'),
+    upload_profile.single("file"),
     authJwt.SaveLogs("อัพโหลดรูปภาพ Profile"),
-    controller.upuploadImage);
-
-
-
-
-
-
-
-
-
-
-
-
-
+    controller.upuploadImage
+  );
 };

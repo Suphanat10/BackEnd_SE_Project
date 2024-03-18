@@ -767,7 +767,7 @@ exports.get_course_lesson_by_course_id = async (req, res) => {
 
     const course = await prisma.course.findFirst({
       where: {
-        course_id: course_id
+        course_id: course_id,
       },
       include: {
         course_lesson: {
@@ -797,11 +797,9 @@ exports.get_course_lesson_by_course_id = async (req, res) => {
   }
 };
 
-
-
 exports.get_Content_study = async (req, res) => {
   try {
-    const  lesson_id  = parseInt(req.params.lesson_id);
+    const lesson_id = parseInt(req.params.lesson_id);
     const user_id = req.user_id;
 
     if (!lesson_id) {
@@ -814,13 +812,13 @@ exports.get_Content_study = async (req, res) => {
     const Content = await prisma.course_lesson.findFirst({
       where: {
         lesson_id: lesson_id,
-        course: { 
+        course: {
           course_reg: {
             some: {
-              user_id: user_id
-            }
-          }
-        }
+              user_id: user_id,
+            },
+          },
+        },
       },
       include: {
         lesson_chapter: {
@@ -833,19 +831,16 @@ exports.get_Content_study = async (req, res) => {
         },
       },
     });
-    
+
     if (!Content) {
       return res.status(404).send([]);
     }
 
     res.status(200).send(Content);
-
   } catch (err) {
     res.status(500).send({
       message: err.message,
       code: 500,
     });
   }
-
-}
-
+};
