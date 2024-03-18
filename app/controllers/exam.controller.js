@@ -387,7 +387,7 @@ exports.get_exm_sut   = async (req, res) => {
   const exam = await prisma.course_exam.findFirst({
     where: {
       exam_id: exam_id,
-      course: { 
+      course: {
         course_reg: {
           some: {
             user_id: user_id
@@ -397,12 +397,15 @@ exports.get_exm_sut   = async (req, res) => {
     },
     include: {
       course_exam_problem: {
-        include: {
+        select: {
+          problem_name: true,
+          problem_id: true,
           course_exam_choices: true
         }
       }
     }
   });
+  
 
   if (!exam) {
     return res.status(200).send([]);
@@ -455,7 +458,6 @@ exports.get_exam = async (req, res) => {
       }
     });
 
-// ทำการนับจำนวน problem_id สำหรับแต่ละ course_exam
 const examsWithProblemCounts = exam.map(course => {
   const exams = course.course_exam.map(exam => {
     const examProblems = exam.course_exam_problem.length;
