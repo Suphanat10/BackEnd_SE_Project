@@ -427,7 +427,7 @@ exports.get_exam = async (req, res) => {
   const course_id = parseInt(req.params.course_id);
   const user_id = req.user_id;
 
-  const exam = await prisma.course_lesson.findFirst({
+  const exam = await prisma.course_lesson.findMany({
     where: {
       course_id: course_id,
       course: { 
@@ -439,20 +439,33 @@ exports.get_exam = async (req, res) => {
       }
     },
     select: {
+      lesson_name: true,
+      lesson_id: true,
       course_exam: {
         select: {
           exam_id: true,
           exam_name: true
-        }
+        },
+       // หาเเค่มี course_exam 
+        // where: {
+        //   exam_id: {
+        //     not: null
+        //   }
+        // }
+
+
       }
     }
-
   });
+  
   if (!exam) {
     return res.status(200).send([]);
   }
 
-  res.status(200).send(exam);
+  const exam1 = exam.filter((item)=> item.course_exam.length > 0)
+
+
+  res.status(200).send(exam1);
 
   }
   catch (err) {
