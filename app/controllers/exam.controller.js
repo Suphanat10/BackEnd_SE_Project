@@ -504,7 +504,11 @@ exports.get_exam = async (req, res) => {
           }
         }
       }
-      totalScores.push({ lesson_id: exam.lesson_id, score: score });
+      totalScores.push({
+
+        exam_id: exam.course_exam[0].exam_id,
+        score: score,
+      });
     }
 
     for await (const exam of validExams) {
@@ -516,14 +520,14 @@ exports.get_exam = async (req, res) => {
     for await (const exam of validExams) {
       for await (const score of totalScores) {
         for await (const course_exam of exam.course_exam) {
-          if (course_exam.lesson_id === score.lesson_id) {
+          if (course_exam.exam_id === score.exam_id) {
             course_exam.score = score.score;
           }
         }
       }
     }
 
-    res.status(200).send(validExams);
+    res.status(200).send(validExams,);
   } catch (err) {
     res.status(500).send({
       message: err.message,
