@@ -423,61 +423,63 @@ exports.get_exm_sut   = async (req, res) => {
 
 
 exports.get_exam = async (req, res) => {
-  try{
-  const course_id = parseInt(req.params.course_id);
-  const user_id = req.user_id;
+  try {
+    const course_id = parseInt(req.params.course_id);
+    const user_id = req.user_id;
 
-  const exam = await prisma.course_lesson.findMany({
-    where: {
-      course_id: course_id,
-      course: { 
-        course_reg: {
-          some: {
-            user_id: user_id
+    const exam = await prisma.course_lesson.findMany({
+      where: {
+        course_id: course_id,
+        course: {
+          course_reg: {
+            some: {
+              user_id: user_id
+            }
+          }
+        }
+      },
+      select: {
+        lesson_name: true,
+        lesson_id: true,
+        course_exam: {
+          select: {
+            exam_id: true,
+            exam_name: true,
+            course_exam_problem: {
+              select: {
+                problem_id: true
+              }
+            }
           }
         }
       }
-    },
-    select: {
-      lesson_name: true,
-      lesson_id: true,
-      course_exam: {
-        select: {
-          exam_id: true,
-          exam_name: true
-        },
-       // หาเเค่มี course_exam 
-        // where: {
-        //   exam_id: {
-        //     not: null
-        //   }
-        // }
+    });
 
+    // ทำการนับจำนวน problem_id สำหรับแต่ละ course_exam
+    const examsWithProblemCounts = exam.map(course => {
+      const examProblems = course.course_exam.map(exam => exam.course_exam_problem.length);
+      const totalProblems = examProblems.reduce((acc, count) => acc + count, 0);
+      return {
+        ...course,
+        total_problems: totalProblems
+      };
+    });
 
-      }
-    }
-  });
-  
-  if (!exam) {
-    return res.status(200).send([]);
-  }
+    console.log(examsWithProblemCounts);
+    // กรณีต้องการส่งข้อมูลทั้งหมดก่อนจะกรอง
+    // res.status(200).send(examsWithProblemCounts);
 
-  const exam1 = exam.filter((item)=> item.course_exam.length > 0)
+    // กรองเฉพาะข้อมูลที่มี course_exam ไม่ว่าง
+    const exam1 = examsWithProblemCounts.filter((item) => item.course_exam.length > 0);
 
-
-  res.status(200).send(exam1);
-
-  }
-  catch (err) {
+    res.status(200).send(exam1);
+  } catch (err) {
     res.status(500).send({
       message: err.message,
       code: 500,
     });
   }
-}
-
-
-
+};
 
 
 
