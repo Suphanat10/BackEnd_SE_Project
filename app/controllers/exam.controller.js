@@ -465,11 +465,7 @@ exports.get_exam = async (req, res) => {
       };
     });
 
-    console.log(examsWithProblemCounts);
-    // กรณีต้องการส่งข้อมูลทั้งหมดก่อนจะกรอง
-    // res.status(200).send(examsWithProblemCounts);
-
-    // กรองเฉพาะข้อมูลที่มี course_exam ไม่ว่าง
+  
     const exam1 = examsWithProblemCounts.filter((item) => item.course_exam.length > 0);
 
     res.status(200).send(exam1);
