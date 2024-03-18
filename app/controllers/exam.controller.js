@@ -102,7 +102,7 @@ exports.create_exam_question_choice = async (req, res) => {
 
 exports.update_exam = async (req, res) => {
   try {
-    const exam_id = parseInt(req.params.exam_id);
+    const exam_id = parseInt(req.body.exam_id);
     const exam_name = req.body.exam_name;
 
     const existingExam = await prisma.course_exam.findFirst({
