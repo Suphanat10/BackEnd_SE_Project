@@ -83,6 +83,21 @@ exports.update__exam_question_choice = async (req, res) => {
 exports.create_exam_question_choice = async (req, res) => {
   try {
     const exam = req.body.exam;
+  
+     const  removeExam = await prisma.course_exam_problem.deleteMany({
+      where: {
+        exam_id: exam.exam_id,
+      },
+    });
+    
+    
+
+
+
+
+
+ 
+            
 
     for await (const question of exam.questions) {
       const createQuestion = await prisma.course_exam_problem.create({

@@ -41,7 +41,7 @@ model course_exam_choices {
   choices_id                                                                  Int                   @id @default(autoincrement())
   problem_id                                                                  Int?
   label                                                                       String?               @db.Text
-  course_exam_problem                                                         course_exam_problem?  @relation(fields: [problem_id], references: [problem_id], onDelete: Restrict, onUpdate: Restrict, map: "course_exam_choices_ibfk_1")
+  course_exam_problem                                                         course_exam_problem?  @relation(fields: [problem_id], references: [problem_id], onDelete: Cascade, map: "course_exam_choices_ibfk_1")
   course_exam_problem_course_exam_problem_correct_choiceTocourse_exam_choices course_exam_problem[] @relation("course_exam_problem_correct_choiceTocourse_exam_choices")
 
   @@index([problem_id], map: "problem_id")
@@ -53,12 +53,12 @@ model course_exam_problem {
   problem_name                                                                String?               @db.VarChar(255)
   correct_choice                                                              Int?
   course_exam_choices                                                         course_exam_choices[]
-  course_exam                                                                 course_exam?          @relation(fields: [exam_id], references: [exam_id], onDelete: Restrict, onUpdate: Restrict, map: "course_exam_problem_ibfk_1")
-  course_exam_choices_course_exam_problem_correct_choiceTocourse_exam_choices course_exam_choices?  @relation("course_exam_problem_correct_choiceTocourse_exam_choices", fields: [correct_choice], references: [choices_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_correct_choice")
+  course_exam_choices_course_exam_problem_correct_choiceTocourse_exam_choices course_exam_choices?  @relation("course_exam_problem_correct_choiceTocourse_exam_choices", fields: [correct_choice], references: [choices_id], onDelete: Cascade, map: "fk_correct_choice")
+  course_exam                                                                 course_exam?          @relation(fields: [exam_id], references: [exam_id], onDelete: NoAction, onUpdate: NoAction, map: "course_exam_problem_ibfk_1")
   reg_exam_ans                                                                reg_exam_ans[]
 
   @@index([exam_id], map: "exam_id")
-  @@index([correct_choice], map: "fk_correct_choice")
+  @@index([correct_choice], map: "correct_choice")
 }
 
 model course_lesson {
