@@ -784,24 +784,24 @@ exports.get_course_lesson_by_course_id = async (req, res) => {
           lesson_id: true,
         },
       },
-      course_reg: {
-        include: {
-          users_account: {
-            select: {
-              prefix: true,
-              first_name: true,
-              last_name: true,
-            },
-          },
-          // users_reg_transfer_document: {
-          //   select: {
-          //     transfer_document: true,
-          //     comment: true,
-          //     document_id: true,
-          //   },
-          // },
-        },
-      },
+      // course_reg: {
+      //   include: {
+      //     users_account: {
+      //       select: {
+      //         prefix: true,
+      //         first_name: true,
+      //         last_name: true,
+      //       },
+      //     },
+      //     // users_reg_transfer_document: {
+      //     //   select: {
+      //     //     transfer_document: true,
+      //     //     comment: true,
+      //     //     document_id: true,
+      //     //   },
+      //     // },
+      //   },
+      // },
     },
   });
   if (!course) {
