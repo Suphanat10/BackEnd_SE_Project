@@ -14,7 +14,9 @@ module.exports = function (app) {
 
 
     app.post("/api/course/exam/createExam",
-    // [authJwt.verifyToken, authJwt.isTutor],
+    [authJwt.verifyToken,],
+    authJwt.SaveLogs("สร้างชื่อเเบบทดสอบ"),
+    
     controller.create_course_exam);
 
 
@@ -29,20 +31,20 @@ module.exports = function (app) {
 
 
     app.delete("/api/course/exam/deleteExam/:exam_id",
-    // [authJwt.verifyToken, authJwt.isTutor],
+    [authJwt.verifyToken,],
+    authJwt.SaveLogs("ลบขชื่อเเบบทดสอบ"),
     controller.delete_exam);
 
 
 app.post("/api/course/exam/updateExam",
-    // [authJwt.verifyToken, authJwt.isTutor],
-    controller.update_exam);
+[authJwt.verifyToken,],
+authJwt.SaveLogs("เเก้ไขชื่อเเบบทดสอบ"),
+ controller.update_exam);
 
-
-
-    
 
     app.post("/api/course/createQuestion",
-    // [authJwt.verifyToken,],
+    [authJwt.verifyToken,],
+    authJwt.SaveLogs("สร้างคำถามเเละคำตอบ"),
     controller.create_exam_question_choice);
 
 

@@ -45,6 +45,7 @@ exports.calculateScore = async (req, res) => {
 
             }
         }
+        
         if (score >=  Ans.length/2) {
             res.status(200).send({
                 message: "ยินดีด้วยคุณผ่านการทำเเบบทดสอบ",
