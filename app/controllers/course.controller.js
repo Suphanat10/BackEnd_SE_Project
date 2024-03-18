@@ -811,11 +811,15 @@ exports.get_Content_study = async (req, res) => {
       });
     }
 
-    const  Content  = await prisma.course_lesson.findFirst({
+    const Content = await prisma.course_lesson.findFirst({
       where: {
         lesson_id: lesson_id,
-        course_reg:{
-           user_id: user_id
+        course: { 
+          course_reg: {
+            some: {
+              user_id: user_id
+            }
+          }
         }
       },
       include: {
@@ -829,7 +833,7 @@ exports.get_Content_study = async (req, res) => {
         },
       },
     });
-
+    
     if (!Content) {
       return res.status(404).send([]);
     }
