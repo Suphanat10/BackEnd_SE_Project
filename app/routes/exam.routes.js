@@ -48,6 +48,17 @@ authJwt.SaveLogs("เเก้ไขชื่อเเบบทดสอบ"),
     controller.create_exam_question_choice);
 
 
+    app.get("/api/course/getQuestion_student/:exam_id",
+    [authJwt.verifyToken,],
+    controller.get_exm_sut);
+
+    app.get("/api/course/getExam_student/:course_id",
+    [authJwt.verifyToken,],
+    controller.get_exam);
+
+
+
+
 
 
 

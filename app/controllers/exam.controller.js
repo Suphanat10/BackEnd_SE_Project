@@ -377,4 +377,110 @@ exports.delete_exam_choices = async (req, res) => {
   }
 };
 
+exports.get_exm_sut   = async (req, res) => {
+
+  try {
+  const exam_id = parseInt(req.params.exam_id);
+  const user_id = req.user_id;
+
+
+  const exam = await prisma.course_exam.findFirst({
+    where: {
+      exam_id: exam_id,
+      course: { 
+        course_reg: {
+          some: {
+            user_id: user_id
+          }
+        }
+      }
+    },
+    include: {
+      course_exam_problem: {
+        include: {
+          course_exam_choices: true
+        }
+      }
+    }
+  });
+
+  if (!exam) {
+    return res.status(200).send([]);
+  }
+
+  res.status
+  (200).send
+  (exam);
+  }
+
+  catch (err) {
+    res.status(500).send({
+      message: err.message,
+      code: 500,
+    });
+  }
+}
+
+
+exports.get_exam = async (req, res) => {
+  try{
+  const course_id = parseInt(req.params.course_id);
+  const user_id = req.user_id;
+
+  const exam = await prisma.course_lesson.findFirst({
+    where: {
+      course_id: course_id,
+      course: { 
+        course_reg: {
+          some: {
+            user_id: user_id
+          }
+        }
+      }
+    },
+    select: {
+      course_exam: {
+        select: {
+          exam_id: true,
+          exam_name: true
+        }
+      }
+    }
+
+  });
+  if (!exam) {
+    return res.status(200).send([]);
+  }
+
+  res.status(200).send(exam);
+
+  }
+  catch (err) {
+    res.status(500).send({
+      message: err.message,
+      code: 500,
+    });
+  }
+}
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
 
