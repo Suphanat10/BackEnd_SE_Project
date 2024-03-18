@@ -6,7 +6,6 @@ exports.get_course_exam = async (req, res) => {
     const lesson_id = parseInt(req.params.lesson_id);
     const user_id = req.user_id;
 
-
     if (!lesson_id) {
       return res.status(400).send({
         message: "Lesson ID is required!",
@@ -17,18 +16,18 @@ exports.get_course_exam = async (req, res) => {
       where: {
         lesson_id: lesson_id,
         course: {
-          instructor: user_id
-        }
+          instructor: user_id,
+        },
       },
       include: {
         _count: {
           select: {
-            course_exam_problem: true
-          }
-        }
-      }
+            course_exam_problem: true,
+          },
+        },
+      },
     });
-    
+
     res.status(200).send(exam);
   } catch (err) {
     res.status(500).send({
@@ -38,40 +37,204 @@ exports.get_course_exam = async (req, res) => {
   }
 };
 
+exports.update__exam_question_choice = async (req, res) => {
+  try{
+    const  exam = req.body.exam;
+
+    for await (const question of exam.questions) {
+      const updateQuestion = await prisma.course_exam_problem.update({
+        where: {
+          problem_id: question.problem_id,
+        },
+        data: {
+          problem_name: question.problem_name,
+          correct_choice: question.correct_choice,
+        },
+      });
+
+      const updateChoices = await prisma.course_exam_choices.updateMany({
+        where: {
+          problem_id: question.problem_id,
+        },
+        data: question.choices.map((choice) => {
+          return {
+            label: choice.label,
+          };
+        }),
+      });
+
+    }
+    res.status(200).send({
+      message: "Exam questions and choices updated successfully!",
+      code: 200,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      message: error.message,
+      code: 500,
+    });
+  }
+};
+
+
+
+exports.create_exam_question_choice = async (req, res) => {
+  try {
+    const exam = req.body.exam;
+
+    for await (const question of exam.questions) {
+      const createQuestion = await prisma.course_exam_problem.create({
+        data: {
+          problem_name: question.problem_name,
+          exam_id: exam.exam_id,
+          correct_choice: question.correct_choice,
+        },
+      });
+
+  
+      await prisma.course_exam_choices.createMany({
+        data: question.choices.map((choice) => {
+          return {
+            problem_id: createQuestion.problem_id,
+            label: choice.label,
+          };
+        }),
+      });
+
+     
+      const choiceIds = await prisma.course_exam_choices.findMany({
+        where: {
+          problem_id: createQuestion.problem_id,
+        },
+        select: {
+          choices_id: true, 
+        },
+      });
+      
+      const choicesId = choiceIds.map((choice) => choice.choices_id);
+
+      await prisma.course_exam_problem.update({
+        where: {
+          problem_id: createQuestion.problem_id,
+        },
+        data: {
+          correct_choice: choicesId[question.correct_choice],
+        },
+      });
+    }
+
+    res.status(200).send({
+      message: "Exam questions and choices created successfully!",
+      code: 200,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      message: error.message,
+      code: 500,
+    });
+  }
+};
+
+
+
+
+
+
 
 // exports.create_exam_question_choice = async (req, res) => {
 //   try {
-//     const exam_id = req.body.exam_id;
-//     const problem_name = req.body.problem_name;
-//     const correct_choice = req.body.correct_choice;
+//     const exam = req.body.exam;
 
-//     const problem_id = req.body.problem_id;
-//     const label = req.body.label;
-
-//     if (!exam_id || !problem_name || !correct_choice || !problem_id || !label) {
-//       return res.status(400).send({
-//         message: "Exam ID, problem name, correct choice, problem ID and label are required!",
-//         code: 400,
+//     for await (const question of exam.questions) {
+//       const createQuestion = await prisma.course_exam_problem.create({
+//         data: {
+//           problem_name: question.problem_name,
+//           exam_id: exam.exam_id,
+//           correct_choice: question.correct_choice,
+//         },
 //       });
+
+//       const createChoices = await prisma.course_exam_choices.createMany({
+//         data: question.choices.map((choice) => {
+//           return {
+//             problem_id: createQuestion.problem_id,
+//             label: choice.label,
+//           };
+//         }),
+//       });
+
+//       const  choices_id =  await prisma.course_exam_choices.findMany({
+//         where: {
+//           problem_id: createQuestion.problem_id,
+//         },
+//       });
+
+
+//       const choicesIds = createChoices.map((choice) => choice.choice_id);
+
+
+//       const correctChoice = choicesIds.find((choiceId) => {
+//         return choiceId === question.correct_choice;
+//       }
+//       );
+
+//       if (!correctChoice) {
+//         return res.status(400).send({
+//           message: "Correct choice is not found!",
+//           code: 400,
+//         });
+//       }
+
+//       const updateQuestion = await prisma.course_exam_problem.update({
+//         where: {
+//           problem_id: createQuestion.problem_id,
+//         },
+//         data: {
+//           correct_choice: correctChoice,
+//         },
+//       });
+
+
+
+
+     
+      
+
+
+      
+
+
+      
+     
+
+
+
+
+
+
+
+
 //     }
-
-
-
-
-
-  
-
-
-
-
-
-
-
+//     res.status(200).send({
+//       message: "Exam questions and choices created successfully!",
+//       code: 200,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({
+//       message: error.message,
+//       code: 500,
+//     });
+//   }
+// };
 
 exports.get_exam_question_choice_by_exam = async (req, res) => {
   try {
     const exam_id = parseInt(req.params.exam_id);
-   
+
     if (!exam_id) {
       return res.status(400).send({
         message: "Exam ID is required!",
@@ -104,16 +267,13 @@ exports.get_exam_question_choice_by_exam = async (req, res) => {
       where: {
         exam_id: exam_id,
       },
-
-
-
     });
 
-    if(!examQuestion){
+    if (!examQuestion) {
       return res.status(200).send([]);
     }
 
-    res.status(200).send(examQuestion );
+    res.status(200).send(examQuestion);
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -174,235 +334,9 @@ exports.create_course_exam = async (req, res) => {
   }
 };
 
-exports.create_exam_question = async (req, res) => {
-  try {
-    const exam_id = req.body.exam_id;
-    const problem_name = req.body.problem_name;
-    const correct_choice = req.body.correct_choice;
 
-    if (!exam_id || !problem_name || !correct_choice) {
-      return res.status(400).send({
-        message: "Exam ID, problem name and correct choice are required!",
-        code: 400,
-      });
-    }
 
-    const existingExam = await prisma.course_exam.findFirst({
-      where: {
-        exam_id: exam_id,
-      },
-    });
 
-    if (!existingExam) {
-      return res.status(404).send({
-        message: "Exam is not found!",
-        code: 404,
-      });
-    }
-
-    const createQuestion = await prisma.course_exam_problem.create({
-      data: {
-        problem_name: problem_name,
-        correct_choice: correct_choice,
-        exam_id: exam_id,
-      },
-    });
-
-    res.status(200).send({
-      message: "Question was created successfully!",
-      code: 200,
-    });
-  } catch (err) {
-    res.status(500).send({
-      message: err.message,
-      code: 500,
-    });
-  }
-};
-
-exports.create_exam_choices = async (req, res) => {
-  try {
-    const problem_id = req.body.problem_id;
-    const label = req.body.label;
-
-    if (!problem_id || !label) {
-      return res.status(400).send({
-        message: "Problem ID and label are required!",
-        code: 400,
-      });
-    }
-
-    const existingProblem = await prisma.course_exam_problem.findFirst({
-      where: {
-        problem_id: problem_id,
-      },
-    });
-
-    if (!existingProblem) {
-      return res.status(404).send({
-        message: "Problem is not found!",
-        code: 404,
-      });
-    }
-
-    const createChoice = await prisma.course_exam_choices.create({
-      data: {
-        label: label,
-        problem_id: problem_id,
-      },
-    });
-
-    res.status(200).send({
-      message: "Choice was created successfully!",
-      code: 200,
-    });
-  } catch (err) {
-    res.status(500).send({
-      message: err.message,
-      code: 500,
-    });
-  }
-};
-
-exports.update_create_course_exam = async (req, res) => {
-  try {
-    const exam_id = req.body.exam_id;
-    const exam_name = req.body.exam_name;
-
-    if (!exam_id || !exam_name) {
-      return res.status(400).send({
-        message: "Exam ID and exam name are required!",
-        code: 400,
-      });
-    }
-
-    const existingExam = await prisma.course_exam.findFirst({
-      where: {
-        exam_id: exam_id,
-      },
-    });
-
-    if (!existingExam) {
-      return res.status(404).send({
-        message: "Exam is not found!",
-        code: 404,
-      });
-    }
-
-    const updateExam = await prisma.course_exam.update({
-      where: {
-        exam_id: exam_id,
-      },
-      data: {
-        exam_name: exam_name,
-      },
-    });
-
-    res.status(200).send({
-      message: "Exam was updated successfully!",
-      code: 200,
-    });
-  } catch (err) {
-    res.status(500).send({
-      message: err.message,
-      code: 500,
-    });
-  }
-};
-
-exports.update_create_exam_question = async (req, res) => {
-  try {
-    const problem_id = req.body.problem_id;
-    const problem_name = req.body.problem_name;
-    const correct_choice = req.body.correct_choice;
-
-    if (!problem_id || !problem_name || !correct_choice) {
-      return res.status(400).send({
-        message: "Problem ID, problem name and correct choice are required!",
-        code: 400,
-      });
-    }
-
-    const existingProblem = await prisma.course_exam_problem.findFirst({
-      where: {
-        problem_id: problem_id,
-      },
-    });
-
-    if (!existingProblem) {
-      return res.status(404).send({
-        message: "Problem is not found!",
-        code: 404,
-      });
-    }
-
-    const updateQuestion = await prisma.course_exam_problem.update({
-      where: {
-        problem_id: problem_id,
-      },
-      data: {
-        problem_name: problem_name,
-        correct_choice: correct_choice,
-      },
-    });
-
-    res.status(200).send({
-      message: "Question was updated successfully!",
-      code: 200,
-    });
-  } catch (err) {
-    res.status(500).send({
-      message: err.message,
-      code: 500,
-    });
-  }
-};
-
-exports.update_create_exam_choices = async (req, res) => {
-  try {
-    const choices_id = req.body.choices_id;
-    const label = req.body.label;
-
-    if (!choices_id || !label) {
-      return res.status(400).send({
-        message: "Choice ID and label are required!",
-        code: 400,
-      });
-    }
-
-    const existingChoice = await prisma.course_exam_choices.findFirst({
-      where: {
-        choices_id: choices_id,
-      },
-    });
-
-    if (!existingChoice) {
-      return res.status(400).send({
-        message: "Choice is not found!",
-        code: 400,
-      });
-    }
-
-    const updateChoice = await prisma.course_exam_choices.update({
-      where: {
-        choices_id: choices_id,
-      },
-      data: {
-        label: label,
-      },
-    });
-
-    res.status(200).send({
-      message: "Choice was updated successfully!",
-      code: 200,
-    });
-  } catch (err) {
-    res.status(500).send({
-      message: err.message,
-      code: 500,
-    });
-  }
-};
 
 exports.delete_exam = async (req, res) => {
   try {
@@ -529,5 +463,3 @@ exports.delete_exam_choices = async (req, res) => {
     });
   }
 };
-
-
