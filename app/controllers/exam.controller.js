@@ -89,7 +89,7 @@ exports.create_exam_question_choice = async (req, res) => {
         exam_id: exam.exam_id,
       },
     });
-    
+
     
 
 
@@ -273,8 +273,10 @@ exports.get_exam_question_choice_by_exam = async (req, res) => {
       select: {
         problem_id: true,
         problem_name: true,
+        correct_choice : true,
         course_exam_choices: {
           select: {
+            choices_id : true,
             label: true,
           },
         },
