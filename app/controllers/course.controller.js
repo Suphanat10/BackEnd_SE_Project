@@ -796,3 +796,52 @@ exports.get_course_lesson_by_course_id = async (req, res) => {
     });
   }
 };
+
+
+
+exports.get_Content_study = async (req, res) => {
+  try {
+    const  lesson_id  = parseInt(req.params.lesson_id);
+    const user_id = req.user_id;
+
+    if (!lesson_id) {
+      return res.status(400).send({
+        message: "Lesson ID is required!",
+        code: 400,
+      });
+    }
+
+    const  Content  = await prisma.course_lesson.findFirst({
+      where: {
+        lesson_id: lesson_id,
+        course: {
+          instructor: user_id,
+        },
+      },
+      include: {
+        lesson_chapter: {
+          select: {
+            lesson_chapter_id: true,
+            content_data: true,
+            content_type: true,
+            content_name: true,
+          },
+        },
+      },
+    });
+
+    if (!Content) {
+      return res.status(404).send([]);
+    }
+
+    res.status(200).send(Content);
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+      code: 500,
+    });
+  }
+
+}
+

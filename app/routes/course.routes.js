@@ -97,5 +97,9 @@ module.exports = function (app) {
     controller.get_course_lesson_by_course_id);
 
 
+    app.get("/api/course/lesson/content_student/:lesson_id",
+    [authJwt.verifyToken],
+    controller.get_Content_study);
+  
 
 };
