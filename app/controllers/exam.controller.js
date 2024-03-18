@@ -610,15 +610,19 @@ exports.do_Exam = async (req, res) => {
         registration_id: registration_id,
         course_exam_problem:{
           problem_id : examData.student_do_choice[0].problem_id
+        
         }
       },
     });
-    
+
      
     if (reg_exam_ans.length > 0) {
       const deleteAnswers = await prisma.reg_exam_ans.deleteMany({
         where: {
           registration_id: registration_id,
+           course_exam_problem:{
+          problem_id : examData.student_do_choice[0].problem_id
+        }
         },
       });
     }
