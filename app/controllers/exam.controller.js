@@ -478,6 +478,10 @@ exports.get_exam = async (req, res) => {
           ) {
             exam.sum_Score++;
           }
+
+          if (problem.correct_choice) {
+            delete problem.correct_choice;
+          }
         });
       });
     });
