@@ -432,36 +432,18 @@ exports.get_exam = async (req, res) => {
 
     const registration_id = registration.registration_id;
 
-    // Fetch exams
-    const exams = await prisma.course_lesson.findMany({
+    const find_lesson = await prisma.course_lesson.findMany({
       where: {
         course_id: course_id,
-        course: {
-          course_reg: {
-            some: {
-              user_id: user_id,
-            },
-          },
-        },
       },
-      select: {
-        lesson_name: true,
-        lesson_id: true,
+      include: {
         course_exam: {
-          select: {
-            exam_id: true,
-            lesson_id: true,
-            exam_name: true,
+          include: {
             course_exam_problem: {
-              select: {
-                problem_id: true,
-                correct_choice: true,
+              include: {
                 reg_exam_ans: {
                   where: {
                     registration_id: registration_id,
-                  },
-                  select: {
-                    select_choice: true,
                   },
                 },
               },
@@ -471,63 +453,133 @@ exports.get_exam = async (req, res) => {
       },
     });
 
-    const examsWithProblemCounts = exams.map((course) => {
-      const exams = course.course_exam.map((exam) => {
-        const examProblems = exam.course_exam_problem.length;
-        return {
-          ...exam,
-          total_problems: examProblems,
-        };
-      });
-      return {
-        ...course,
-        course_exam: exams,
-      };
+    let lesson_arr = find_lesson.filter((lesson) => {
+      return lesson.course_exam.length > 0;
     });
 
-    const validExams = examsWithProblemCounts.filter(
-      (item) => item.course_exam.length > 0
-    );
+    lesson_arr.map((lesson) => {
+      lesson.course_exam.map((exam) => {
+        exam.total_problems = exam.course_exam_problem.length;
 
-    const totalScores = [];
+        exam.sum_Score = 0;
+        exam.is_do = false;
 
-    for await (const exam of validExams) {
-      let score = 0;
-      for await (const problem of exam.course_exam) {
-        for await (const ans of problem.course_exam_problem) {
-          if (ans.reg_exam_ans.length > 0) {
-            const correctChoice = ans.correct_choice;
-            const selectChoice = ans.reg_exam_ans[0].select_choice;
-            if (correctChoice === selectChoice) {
-              score += 1;
-            }
+        exam.course_exam_problem.map((problem) => {
+          problem.reg_exam_ans =
+            problem.reg_exam_ans.length > 0 ? problem.reg_exam_ans[0] : null;
+
+          if (problem.reg_exam_ans && exam.is_do == false) {
+            exam.is_do = true;
           }
-        }
-      }
-      totalScores.push({
 
-        exam_id: exam.course_exam[0].exam_id,
-        score: score,
+          if (
+            problem.reg_exam_ans &&
+            problem.reg_exam_ans.select_choice === problem.correct_choice
+          ) {
+            exam.sum_Score++;
+          }
+        });
       });
-    }
+    });
 
-    for await (const exam of validExams) {
-      for await (const problem of exam.course_exam) {
-        delete problem.course_exam_problem;
-      }
-    }
+    res.status(200).send(lesson_arr);
 
-    for await (const exam of validExams) {
-      for await (const score of totalScores) {
-        for await (const course_exam of exam.course_exam) {
-          if (course_exam.exam_id === score.exam_id) {
-            course_exam.score = score.score;
-          }
-        }
-      }
-    }
+    // Fetch exams
+    // const exams = await prisma.course_lesson.findMany({
+    //   where: {
+    //     course_id: course_id,
+    //     course: {
+    //       course_reg: {
+    //         some: {
+    //           user_id: user_id,
+    //         },
+    //       },
+    //     },
+    //   },
+    //   select: {
+    //     lesson_name: true,
+    //     lesson_id: true,
+    //     course_exam: {
+    //       select: {
+    //         exam_id: true,
+    //         lesson_id: true,
+    //         exam_name: true,
+    //         course_exam_problem: {
+    //           select: {
+    //             problem_id: true,
+    //             correct_choice: true,
+    //             reg_exam_ans: {
+    //               where: {
+    //                 registration_id: registration_id,
+    //               },
+    //               select: {
+    //                 select_choice: true,
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
 
-    res.status(200).send(validExams,);
+    // const examsWithProblemCounts = exams.map((course) => {
+    //   const exams = course.course_exam.map((exam) => {
+    //     const examProblems = exam.course_exam_problem.length;
+    //     return {
+    //       ...exam,
+    //       total_problems: examProblems,
+    //     };
+    //   });
+    //   return {
+    //     ...course,
+    //     course_exam: exams,
+    //   };
+    // });
+
+    // const validExams = examsWithProblemCounts.filter(
+    //   (item) => item.course_exam.length > 0
+    // );
+
+    // const totalScores = [];
+
+    // for await (const exam of validExams) {
+    //   let score = 0;
+    //   for await (const problem of exam.course_exam) {
+    //     for await (const ans of problem.course_exam_problem) {
+    //       if (ans.reg_exam_ans.length > 0) {
+    //         const correctChoice = ans.correct_choice;
+    //         const selectChoice = ans.reg_exam_ans[0].select_choice;
+    //         if (correctChoice === selectChoice) {
+    //           score += 1;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   totalScores.push({
+
+    //     exam_id: exam.course_exam[0].exam_id,
+    //     score: score,
+    //   });
+    // }
+
+    // for await (const exam of validExams) {
+    //   for await (const problem of exam.course_exam) {
+    //     delete problem.course_exam_problem;
+    //   }
+    // }
+
+    // for await (const exam of validExams) {
+    //   for await (const score of totalScores) {
+    //     for await (const course_exam of exam.course_exam) {
+    //       if (course_exam.exam_id === score.exam_id) {
+    //         course_exam.score = score.score;
+    //       }
+    //     }
+    //   }
+    // }
+
+    // res.status(200).send(validExams,);
   } catch (err) {
     res.status(500).send({
       message: err.message,
