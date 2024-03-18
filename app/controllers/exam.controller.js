@@ -414,7 +414,25 @@ exports.get_exam = async (req, res) => {
     const course_id = parseInt(req.params.course_id);
     const user_id = req.user_id;
 
-    const exam = await prisma.course_lesson.findMany({
+    // Find registration_id
+    const registration = await prisma.course_reg.findFirst({
+      where: {
+        user_id: user_id,
+        course_id: course_id
+      }
+    });
+    
+    if (!registration) {
+      return res.status(404).send({
+        message: "User is not registered for this course!",
+        code: 404
+      });
+    }
+
+    const registration_id = registration.registration_id;
+
+    // Fetch exams
+    const exams = await prisma.course_lesson.findMany({
       where: {
         course_id: course_id,
         course: {
@@ -435,14 +453,73 @@ exports.get_exam = async (req, res) => {
             course_exam_problem: {
               select: {
                 problem_id: true,
+                correct_choice: true,
+                reg_exam_ans: {
+                  where: {
+                    registration_id: registration_id
+                  },
+                  select: {
+                    select_choice: true
+                  }
+                }
               },
             },
           },
         },
       },
     });
+    
+//     let score =[];
+//     let score1 = 0;
+//     for await (const exam of exams) {
+//   for await (const problem of exam.course_exam) {
+//     for await (const ans of problem.course_exam_problem) {
+//       if (ans.reg_exam_ans.length > 0) {
+//         const correctChoice = ans.correct_choice;
+//         const selectChoice = ans.reg_exam_ans[0].select_choice;
+//         if (correctChoice === selectChoice) {
+//           score.push({ score: score1 + 1});
+//         }
+//       }
+//     }
+//   }
+// }
+const totalScores = [];
+let score = 0; // Initialize score outside the loop
 
-    const examsWithProblemCounts = exam.map((course) => {
+for await (const exam of exams) {
+  for await (const problem of exam.course_exam) {
+    for await (const ans of problem.course_exam_problem) {
+      if (ans.reg_exam_ans.length > 0) {
+        const correctChoice = ans.correct_choice;
+        const selectChoice = ans.reg_exam_ans[0].select_choice;
+        if (correctChoice === selectChoice) {
+         
+          score += 1;
+          totalScores.push({ score: score , exam_id: ans.exam_id});
+        }
+      }
+    }
+  }
+}
+
+// Now you have the total score calculated
+console.log("User's score:", score);
+
+
+
+
+
+
+
+
+ 
+    
+
+    
+
+
+    const examsWithProblemCounts = exams.map((course) => {
       const exams = course.course_exam.map((exam) => {
         const examProblems = exam.course_exam_problem.length;
         return {
@@ -453,14 +530,20 @@ exports.get_exam = async (req, res) => {
       return {
         ...course,
         course_exam: exams,
+
       };
     });
 
-    const exam1 = examsWithProblemCounts.filter(
+    // Filter out exams with no problems
+    const validExams = examsWithProblemCounts.filter(
       (item) => item.course_exam.length > 0
     );
 
-    res.status(200).send(exam1);
+    res.status(200).send({
+      exams: validExams,
+      score: totalScores
+  
+    });
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -468,6 +551,10 @@ exports.get_exam = async (req, res) => {
     });
   }
 };
+
+
+
+
 
 exports.do_Exam = async (req, res) => {
   try {
@@ -485,6 +572,9 @@ exports.do_Exam = async (req, res) => {
     const reg_exam_ans = await prisma.reg_exam_ans.findMany({
       where: {
         registration_id: registration_id,
+        course_exam_problem:{
+          exam_id: examData.exam_id
+        }
       },
     });
 
