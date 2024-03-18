@@ -409,6 +409,8 @@ exports.get_course_by_id = async (req, res) => {
     const course_id = parseInt(req.params.id);
     const user_id = req.user_id;
 
+    console.log(course_id, user_id);
+
     if (!course_id) {
       return res.status(400).send({
         message: "Course ID is required!",
@@ -419,7 +421,7 @@ exports.get_course_by_id = async (req, res) => {
     const course = await prisma.course.findFirst({
       where: {
         course_id: course_id,
-        instructor: user_id,
+        // instructor: user_id,
       },
       include: {
         course_lesson: {
@@ -449,13 +451,10 @@ exports.get_course_by_id = async (req, res) => {
       },
     });
 
-    if (!course) {
-      return res.status(404).send({
-        message: "Course is not found!",
-        code: 404,
-      });
-    }
 
+    if (!course) {
+      return res.status(404).send([]);
+    }
     res.status(200).send(course);
   } catch (err) {
     res.status(500).send({
@@ -775,7 +774,7 @@ exports.get_course_lesson_by_course_id = async (req, res) => {
 
   const course = await prisma.course.findFirst({
     where: {
-      course_id: course_id,
+      course_id: 10,
     },
     include: {
       course_lesson: {
@@ -783,27 +782,27 @@ exports.get_course_lesson_by_course_id = async (req, res) => {
           lesson_name: true,
           lesson_id: true,
         },
-      },
-      // course_reg: {
-      //   include: {
-      //     users_account: {
-      //       select: {
-      //         prefix: true,
-      //         first_name: true,
-      //         last_name: true,
-      //       },
-      //     },
-      //     // users_reg_transfer_document: {
-      //     //   select: {
-      //     //     transfer_document: true,
-      //     //     comment: true,
-      //     //     document_id: true,
-      //     //   },
-      //     // },
-      //   },
-      // },
-    },
+        _count: {
+          select: {
+            lesson_id: true
+          }
+        }
+      }
+    }
   });
+  
+  
+    
+ 
+
+
+
+ 
+  
+  
+  
+    
+
   if (!course) {
     return res.status(404).send([]);
   }
