@@ -89,7 +89,7 @@ exports.create_exam_question_choice = async (req, res) => {
         data: {
           problem_name: question.problem_name,
           exam_id: exam.exam_id,
-          correct_choice: question.correct_choice,
+          correct_choice: null,
         },
       });
 
