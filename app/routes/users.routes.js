@@ -13,7 +13,7 @@ module.exports = function (app) {
   });
 
  app.get("/api/users/getUser", 
-//  [authJwt.verifyToken],
+  [authJwt.verifyToken, authJwt.isAdmin],
   controller.get_user);
 
 
