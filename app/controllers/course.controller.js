@@ -848,3 +848,44 @@ exports.get_Content_study = async (req, res) => {
     });
   }
 };
+
+
+exports.delete_course = async (req, res) => {
+  try{
+     const course_id = parseInt(req.params.id);
+
+    const existingCourse = await prisma.course.findFirst({
+      where: {
+        course_id: course_id,
+      },
+    });
+
+    if (!existingCourse) {
+      return res.status(404).send({
+        message: "Course is not found!",
+        code: 404,
+      });
+    }
+
+
+    const deleteCourse = await prisma.course.delete({
+      where: {
+        course_id: course_id,
+      },
+    });
+
+    res.status(200).send({
+      message: "Course was deleted successfully!",
+      code: 200,
+    });
+
+  }
+  catch (err) {
+    res.status(500).send({
+      message: err.message,
+      code: 500,
+    });
+  }
+}
+
+  

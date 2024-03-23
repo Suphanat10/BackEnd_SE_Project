@@ -110,4 +110,12 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     controller.get_Content_study
   );
+
+
+app.delete(
+  "/api/course/deleteCourse/:id",
+  [authJwt.verifyToken],
+  authJwt.SaveLogs("ลบคอร์สเรียน"),
+  controller.delete_course
+);
 };
