@@ -76,7 +76,33 @@ exports.get_score = async (req, res) => {
     });
   }
 };
-<<<<<<< HEAD
+
+exports.completed = async (req, res) => {
+  try{
+   const registration_id  = req.body.registration_id;
+
+  const update_status = await prisma.course_reg.update({
+    where: {
+      registration_id: registration_id,
+    },
+    data: {
+      registration_status: 2,
+    },
+  });
+
+  res.status(200).send({
+    message: "Approved completion status",
+    code: 200,
+  });
+
+}
+catch (err) {
+  res.status(500).send({
+    message: err.message,
+    code: 500,
+  });
+}
+};
 
 
 
@@ -98,5 +124,11 @@ exports.get_score = async (req, res) => {
 
 
 
-=======
->>>>>>> 2cc3553e08986169b1ee3b94f1545424b0ff40ed
+
+
+
+
+
+
+
+
