@@ -1,75 +1,82 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-exports.calculateScore = async (req, res) => {
 
-    try {
-        const registration_id = parseInt(req.params.registration_id);
-        const exam_id = parseInt(req.params.exam_id);
-        let score = 0;
+exports.get_score = async (req, res) => {
+try {
+  const registration_id = parseInt(req.params.registration_id);
 
-        const Ans = await prisma.reg_exam_ans.findMany({
-            where: {
-              registration_id: registration_id,
-              course_exam_problem: {
-                exam_id: exam_id
-              }
+  const find_lesson = await prisma.course_reg.findFirst({
+    where: {
+      registration_id: registration_id,
+    },
+    include: {
+      course: {
+        include: {
+          course_lesson: {
+            include: {
+              course_exam: {
+                include: {
+                  course_exam_problem: {
+                    include: {
+                      course_exam_choices: true,
+                      reg_exam_ans: true,
+                    },
+                  },
+                },
+              },
             },
-            select: {
-              select_choice: true,
-              course_exam_problem: {
-                select: {
-                  problem_name: true,
-                  correct_choice: true,
-                  course_exam: {
-                    select: {
-                      exam_name: true,
-                      exam_id: true
-                    }
-                  }
-                }
-              }
-            }
-          });
-          
-        if (!Ans) {
-            return res.status(200).send([]);
+          },
+        },
+      },
+    },
+  });
+
+
+  let lesson_arr = find_lesson.course.course_lesson.filter((lesson) => {
+    return lesson.course_exam.length > 0;
+  });
+
+  lesson_arr.map((lesson) => {
+    lesson.course_exam.map((exam) => {
+      exam.total_problems = exam.course_exam_problem.length;
+
+      exam.sum_Score = 0;
+      exam.is_do = false;
+
+      exam.course_exam_problem.map((problem) => {
+        problem.reg_exam_ans =
+          problem.reg_exam_ans.length > 0 ? problem.reg_exam_ans[0] : null;
+
+        if (problem.reg_exam_ans && exam.is_do == false) {
+          exam.is_do = true;
         }
 
-          let Correct_answer =[];
-
-        for await (const ans of Ans) {
-            if (ans.select_choice === ans.course_exam_problem.correct_choice) {
-                score += 1;
-                Correct_answer.push({exam_id: ans.course_exam_problem.course_exam.exam_id})
-
-            }
+        if (
+          problem.reg_exam_ans &&
+          problem.reg_exam_ans.select_choice === problem.correct_choice
+        ) {
+          exam.sum_Score++;
         }
-        
-        if (score >=  Ans.length/2) {
-            res.status(200).send({
-                message: "ยินดีด้วยคุณผ่านการทำเเบบทดสอบ",
-                status_exam: true,
-                score: score,
-                Correct_answer: Correct_answer
-        })
-    } else {
-        res.status(200).send({
-            message: "คุณไม่ผ่านการทำเเบบทดสอบ",
-            status_exam: false,
-            score: score,
-            Correct_answer: Correct_answer
-        })
-    }
-    } catch (error) {
-        res.status(500).send({
-            message: error.message || "Some error occurred while calculating score."
-        });
+
+        if (problem.correct_choice) {
+          delete problem.correct_choice;
+        }
+      });
+    });
+  });
 
 
-    }
-
+  res.status(200).send(lesson_arr);
+} catch (err) {
+  res.status(500).send({
+    message: err.message,
+    code: 500,
+  });
 }
+};
+
+
 
 
 
