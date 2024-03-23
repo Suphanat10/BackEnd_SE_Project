@@ -30,4 +30,7 @@ module.exports = function (app) {
   app.post("/api/logout",
     
    controller.logout);
+
+  app.post("/api/auth/forgotPassword", controller.Forgot_password);
+
 };

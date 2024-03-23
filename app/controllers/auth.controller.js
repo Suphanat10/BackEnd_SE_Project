@@ -3,6 +3,8 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const nodemailer = require("nodemailer");
+
 
 exports.delete_google = async (req, res) => {
   try {
@@ -313,10 +315,23 @@ exports.register = async (req, res) => {
 exports.Forgot_password = async (req, res) => {
   try {
     const username = req.body.username;
+    const email = req.body.email;
+
+    let transporter = nodemailer.createTransport({
+      host: 'mail.wutthiphon.space',
+      port: 587,
+      secure: false,
+      auth: {
+          user: 'project@wutthiphon.space',
+          pass: '6504062620116'
+        
+      },
+  });
 
     const user = await prisma.users_account.findFirst({
       where: {
         username: username,
+        email: email,
       },
     });
 
@@ -327,24 +342,48 @@ exports.Forgot_password = async (req, res) => {
       });
     }
 
-    /// send email
+    const randomPassword = Math.random().toString(36).slice(-8);
+    const newPassword = bcrypt.hashSync(randomPassword, 8);
 
-    res.status(200).send({
-      message: "Please check your email to reset password!",
-      code: 200,
+    const updateUser = await prisma.users_account.update({
+      where: {
+        user_id: user.user_id,
+      },
+      data: {
+        password: newPassword,
+      },
     });
 
+    transporter.sendMail({
+      from: 'e-Learning' ,
+      to: user.email,
+      subject: 'Reset Password',
+      text: `Your new password is ${randomPassword}`,
+    }, (err, info) => {
+      if (err) {
+          console.log(err);
+      } else {
+           res.status(200).send({
+            message: "Send email successfully!",
+            code: 200,
+          });
+      }
+  });
+
+
+  const currentDate = new Date();
+  const sevenHoursAheadDate = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
     const saveLogs = await prisma.logs.create({
       data: {
         log_description: "ลืมรหัสผ่าน",
         user_id: user.user_id,
         ip_address: req.ip,
-        timestamp: new Date(),
+        timestamp: sevenHoursAheadDate 
       },
     });
   } catch (err) {
     res.status(500).send({
-      message: err.message || "Some error occurred while reset the password.",
+      message: err.message ,
       code: 500,
     });
   }
