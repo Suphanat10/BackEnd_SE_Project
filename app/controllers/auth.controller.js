@@ -344,7 +344,7 @@ exports.Forgot_password = async (req, res) => {
       });
     }
 
-    const randomPassword = Math.random().toString(36).slice(-8);
+    const randomPassword = Math.random().toString(36).slice(-12);
     const newPassword = bcrypt.hashSync(randomPassword, 8);
 
     const updateUser = await prisma.users_account.update({
@@ -361,7 +361,46 @@ exports.Forgot_password = async (req, res) => {
       from: "project@wutthiphon.space" ,
       to: user.email,
       subject: 'Reset Password',
-      text: `Your new password is ${randomPassword}`,
+      html: `
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
+      <tr>
+        <td>&nbsp;</td>
+        <td class="container">
+          <div class="content">
+  
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="main">
+  
+              <!-- START MAIN CONTENT AREA -->
+              <tr>
+                <td class="wrapper">
+                  <p><b>เปลี่ยนรหัสผ่าน</b></p>
+                  <p>
+                    คูณได้ทำการรีเซ็ตรหัสผ่านของคุณ<br>
+                    รหัสผ่านใหม่ของคุณคือ <b> ${randomPassword}</b>
+                  </p>
+                
+                  <p>Thank You.</p>
+                </td>
+              </tr>
+  
+              <!-- END MAIN CONTENT AREA -->
+            </table>
+  
+            <!-- START FOOTER -->
+            <div class="footer">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td class="content-block powered-by">
+                    E-Learning
+                  </td>
+                </tr>
+              </table>
+        
+      `,      
+      
+   
+
+      // text: `Your new password is ${randomPassword}`,
     }, (err, info) => {
       if (err) {
           console.log(err);
