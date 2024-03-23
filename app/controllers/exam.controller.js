@@ -173,12 +173,13 @@ exports.create_exam_question_choice = async (req, res) => {
           },
         });
 
+    
+
         await Promise.all(
           question.choices.map(async (choice) => {
             await prisma.course_exam_choices.updateMany({
               where: {
                 problem_id: question.problem_id,
-                label: choice.label,
               },
               data: {
                 label: choice.label,
