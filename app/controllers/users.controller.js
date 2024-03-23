@@ -79,7 +79,7 @@ exports.update_user = async (req, res) => {
 
 exports.delete_user = async (req, res) => {
   try {
-    const user_id = req.body.user_id;
+    const user_id = parseInt(req.params.user_id);
 
     if (!user_id) {
       res.status(400).send({

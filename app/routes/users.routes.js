@@ -22,7 +22,7 @@ module.exports = function (app) {
   authJwt.SaveLogs("แก้ไขข้อมูลผู้ใช้โดย admin"),
   controller.update_user);
 
-  app.post("/api/users/deleteUser",
+  app.delete("/api/users/deleteUser/:user_id",
   [authJwt.verifyToken, authJwt.isAdmin],
   authJwt.SaveLogs("ลบผู้ใช้โดย admin"),
   controller.delete_user);  
