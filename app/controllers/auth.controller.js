@@ -109,7 +109,7 @@ exports.login_by_google = async (req, res) => {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 1),
         httpOnly: false,
         sameSite: "none",
-        secure: true,
+        secure: false,
       })
       .send({
         id: user.user_id,
@@ -173,7 +173,7 @@ exports.login = async (req, res) => {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 1),
         httpOnly: false,
         sameSite: "none",
-        secure: true,
+        secure: false,
       })
       .send({
         id: user.user_id,
@@ -272,7 +272,7 @@ exports.register = async (req, res) => {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 1),
         httpOnly: false,
         sameSite: "none",
-        secure: true,
+        secure: false,
       })
       .send({
         message: "User was registered successfully!",

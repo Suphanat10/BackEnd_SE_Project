@@ -8,7 +8,7 @@ const verifyToken = (req, res, next) => {
 
   if (!cookie) {
     return res.status(403).send({
-      message: "No Token provided 1!",
+      message: "No Token provided!",
     });
   }
   const arrTok = cookie.split(";").reduce((cookies, cookie) => {
