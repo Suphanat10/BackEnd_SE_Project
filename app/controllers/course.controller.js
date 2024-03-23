@@ -58,7 +58,7 @@ exports.course_lesson = async (req, res) => {
   try {
     const lesson_name = req.body.lesson_name;
     const course_id = req.body.course_id;
-    const user_id = req.user_id;
+  
 
     if (!lesson_name || !course_id) {
       return res.status(400).send({
@@ -70,7 +70,7 @@ exports.course_lesson = async (req, res) => {
     const existingCourse = await prisma.course.findFirst({
       where: {
         course_id: course_id,
-        instructor: user_id,
+       
       },
     });
 
