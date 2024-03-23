@@ -335,6 +335,8 @@ exports.Forgot_password = async (req, res) => {
       },
     });
 
+    console.log(user.email);
+
     if (!user) {
       return res.status(404).send({
         message: "User Not found.",
@@ -354,8 +356,9 @@ exports.Forgot_password = async (req, res) => {
       },
     });
 
+    
     transporter.sendMail({
-      from: 'e-Learning' ,
+      from: "project@wutthiphon.space" ,
       to: user.email,
       subject: 'Reset Password',
       text: `Your new password is ${randomPassword}`,
