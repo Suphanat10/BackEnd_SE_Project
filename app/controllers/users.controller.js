@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-
+var bcrypt = require("bcryptjs");
 
 exports.get_user = async (req, res) => {
   try {
