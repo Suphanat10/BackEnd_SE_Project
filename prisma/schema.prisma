@@ -16,7 +16,7 @@ model course {
   image              String?         @db.VarChar(255)
   cost               Float?
   img_account        String?         @db.VarChar(255)
-  users_account      users_account?  @relation(fields: [instructor], references: [user_id], onDelete: Restrict, onUpdate: Restrict, map: "course_ibfk_1")
+  users_account      users_account?  @relation(fields: [instructor], references: [user_id], onDelete: Cascade, map: "course_ibfk_1")
   course_exam        course_exam[]
   course_lesson      course_lesson[]
   course_reg         course_reg[]
@@ -29,12 +29,12 @@ model course_exam {
   exam_name           String?               @db.VarChar(255)
   course_id           Int?
   lesson_id           Int?
-  course              course?               @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_exam_ibfk_1")
-  course_lesson       course_lesson?        @relation(fields: [lesson_id], references: [lesson_id], onDelete: NoAction, onUpdate: NoAction, map: "course_exam_ibfk_2")
+  course              course?               @relation(fields: [course_id], references: [course_id], onDelete: Cascade, map: "course_exam_ibfk_1")
+  course_lesson       course_lesson?        @relation(fields: [lesson_id], references: [lesson_id], onDelete: Cascade, map: "course_exam_ibfk_2")
   course_exam_problem course_exam_problem[]
 
   @@index([course_id], map: "course_id")
-  @@index([lesson_id], map: "lesson_id")
+  @@index([lesson_id], map: "course_exam_ibfk_2")
 }
 
 model course_exam_choices {
@@ -55,7 +55,7 @@ model course_exam_problem {
   correct_choice                                                              Int?
   course_exam_choices                                                         course_exam_choices[]
   course_exam_choices_course_exam_problem_correct_choiceTocourse_exam_choices course_exam_choices?  @relation("course_exam_problem_correct_choiceTocourse_exam_choices", fields: [correct_choice], references: [choices_id], onDelete: Cascade, map: "fk_correct_choice")
-  course_exam                                                                 course_exam?          @relation(fields: [exam_id], references: [exam_id], onDelete: NoAction, onUpdate: NoAction, map: "course_exam_problem_ibfk_1")
+  course_exam                                                                 course_exam?          @relation(fields: [exam_id], references: [exam_id], onDelete: Cascade, map: "course_exam_problem_ibfk_1")
   reg_exam_ans                                                                reg_exam_ans[]
 
   @@index([exam_id], map: "exam_id")
@@ -67,7 +67,7 @@ model course_lesson {
   lesson_name    String?          @db.VarChar(255)
   course_id      Int?
   course_exam    course_exam[]
-  course         course?          @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_lesson_ibfk_1")
+  course         course?          @relation(fields: [course_id], references: [course_id], onDelete: Cascade, map: "course_lesson_ibfk_1")
   lesson_chapter lesson_chapter[]
 
   @@index([course_id], map: "course_id")
@@ -79,8 +79,8 @@ model course_reg {
   user_id                     Int?
   registration_status         Int?
   completion_status           Int?
-  course                      course?                       @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: Restrict, map: "course_reg_ibfk_1")
-  users_account               users_account?                @relation(fields: [user_id], references: [user_id], onDelete: Restrict, onUpdate: Restrict, map: "course_reg_ibfk_2")
+  course                      course?                       @relation(fields: [course_id], references: [course_id], onDelete: Cascade, map: "course_reg_ibfk_1")
+  users_account               users_account?                @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "course_reg_ibfk_2")
   reg_exam_ans                reg_exam_ans[]
   users_reg_transfer_document users_reg_transfer_document[]
 
@@ -94,7 +94,7 @@ model lesson_chapter {
   content_type      Int?
   lesson_id         Int?
   content_name      String         @db.VarChar(255)
-  course_lesson     course_lesson? @relation(fields: [lesson_id], references: [lesson_id], onDelete: Restrict, onUpdate: Restrict, map: "lesson_chapter_ibfk_1")
+  course_lesson     course_lesson? @relation(fields: [lesson_id], references: [lesson_id], onDelete: Cascade, map: "lesson_chapter_ibfk_1")
 
   @@index([lesson_id], map: "lesson_id")
 }
@@ -112,8 +112,8 @@ model reg_exam_ans {
   registration_id        Int?
   problem_id             Int?
   select_choice          Int?
-  course_reg             course_reg?          @relation(fields: [registration_id], references: [registration_id], onDelete: Restrict, onUpdate: Restrict, map: "reg_exam_ans_ibfk_1")
-  course_exam_problem    course_exam_problem? @relation(fields: [problem_id], references: [problem_id], onDelete: Restrict, onUpdate: Restrict, map: "reg_exam_ans_ibfk_2")
+  course_reg             course_reg?          @relation(fields: [registration_id], references: [registration_id], onDelete: Cascade, map: "reg_exam_ans_ibfk_1")
+  course_exam_problem    course_exam_problem? @relation(fields: [problem_id], references: [problem_id], onDelete: Cascade, map: "reg_exam_ans_ibfk_2")
   course_exam_choices    course_exam_choices? @relation(fields: [select_choice], references: [choices_id], onDelete: Cascade, map: "reg_exam_ans_ibfk_3")
 
   @@index([problem_id], map: "problem_id")
@@ -142,7 +142,7 @@ model users_reg_transfer_document {
   transfer_document String?     @db.VarChar(255)
   comment           String?     @db.VarChar(255)
   registration_id   Int?
-  course_reg        course_reg? @relation(fields: [registration_id], references: [registration_id], onDelete: NoAction, onUpdate: NoAction, map: "users_reg_transfer_document_ibfk_1")
+  course_reg        course_reg? @relation(fields: [registration_id], references: [registration_id], onDelete: Cascade, map: "users_reg_transfer_document_ibfk_1")
 
-  @@index([registration_id], map: "registration_id")
+  @@index([registration_id], map: "users_reg_transfer_document_ibfk_1")
 }
