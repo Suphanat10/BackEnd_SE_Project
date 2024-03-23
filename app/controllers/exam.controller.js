@@ -170,7 +170,7 @@ exports.create_exam_question_choice = async (req, res) => {
         }
       }
     }
-
+    
     res.status(200).send({
       message: "Exam questions and choices created successfully!",
       code: 200,

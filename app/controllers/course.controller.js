@@ -177,6 +177,7 @@ exports.get_course = async (req, res) => {
   }
 };
 
+
 exports.update_course = async (req, res) => {
   try {
     const course_id = req.body.course_id;
@@ -571,8 +572,10 @@ exports.get_mycourse = async (req, res) => {
 
     if (users.permission_id == 1) {
       const course = await prisma.course.findMany({
+
         where: {
           course_reg: {
+    
             some: {
               user_id: user_id,
             },
@@ -584,6 +587,7 @@ exports.get_mycourse = async (req, res) => {
           course_description: true,
           course_visibility: true,
           image: true,
+          img_account: true,
           cost: true,
           course_lesson: {
             select: {
