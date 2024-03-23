@@ -31,7 +31,8 @@ module.exports = function (app) {
     controller.course_lesson_content
   );
 
-  app.get("/api/course/getCourse", controller.get_course);
+  app.get("/api/course/getCourse",
+   controller.get_course);
 
   app.get(
     "/api/course/getCourseContent/:id",

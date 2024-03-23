@@ -17,6 +17,16 @@ module.exports = function (app) {
   controller.get_user);
 
 
+  app.post("/api/users/updateUser",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  authJwt.SaveLogs("แก้ไขข้อมูลผู้ใช้โดย admin"),
+  controller.update_user);
+
+  app.post("/api/users/deleteUser",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  authJwt.SaveLogs("ลบผู้ใช้โดย admin"),
+  controller.delete_user);  
+
 
 
   

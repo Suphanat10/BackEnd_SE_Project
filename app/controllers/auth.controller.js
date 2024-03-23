@@ -20,13 +20,14 @@ exports.delete_google = async (req, res) => {
       message: "Google Account was deleted successfully!",
       code: 200,
     });
-
+    const currentDate = new Date();
+    const sevenHoursAheadDate = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
     const saveLogs = await prisma.logs.create({
       data: {
         log_description: "ยกเลิกการเชื่อต่อ Google Account",
         user_id: user_id,
         ip_address: req.ip,
-        timestamp: new Date(),
+        timestamp: sevenHoursAheadDate
       },
     });
   } catch (err) {
@@ -65,13 +66,14 @@ exports.register_by_google = async (req, res) => {
       message: "Google Account was registered successfully!",
       code: 200,
     });
-
+    const currentDate = new Date();
+      const sevenHoursAheadDate = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
     const saveLogs = await prisma.logs.create({
       data: {
         log_description: "การเชื่อต่อ Google Account",
         user_id: user_id,
         ip_address: req.ip,
-        timestamp: new Date(),
+        timestamp: sevenHoursAheadDate
       },
     });
   } catch (err) {
@@ -119,13 +121,14 @@ exports.login_by_google = async (req, res) => {
         permission: user.permission_id,
         accessToken: token,
       });
-
+      const currentDate = new Date();
+      const sevenHoursAheadDate = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
     const saveLogs = await prisma.logs.create({
       data: {
         log_description: "เข้าสู่ระบบโดยใช้ Google Account",
         user_id: user.user_id,
         ip_address: req.ip,
-        timestamp: new Date(),
+        timestamp: sevenHoursAheadDate
       },
     });
   } catch (err) {
@@ -183,13 +186,14 @@ exports.login = async (req, res) => {
         permission: user.permission_id,
         accessToken: token,
       });
-
+      const currentDate = new Date();
+      const sevenHoursAheadDate = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
     const saveLogs = await prisma.logs.create({
       data: {
         log_description: "เข้าสู่ระบบ",
         user_id: user.user_id,
         ip_address: req.ip,
-        timestamp: new Date(),
+        timestamp: sevenHoursAheadDate
       },
     });
   } catch (err) {
@@ -288,13 +292,14 @@ exports.register = async (req, res) => {
         permission: createUser.permission_id,
         accessToken: token,
       });
-
+      const currentDate = new Date();
+      const sevenHoursAheadDate = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
     const saveLogs = await prisma.logs.create({
       data: {
         log_description: "ลงทะเบียนผู้ใช้งานใหม่",
         user_id: createUser.user_id,
         ip_address: req.ip,
-        timestamp: new Date(),
+        timestamp: sevenHoursAheadDate
       },
     });
   } catch (err) {
