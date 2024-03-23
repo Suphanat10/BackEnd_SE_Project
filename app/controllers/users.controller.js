@@ -14,8 +14,9 @@ exports.get_user = async (req, res) => {
         image: true,
         permission_id: true,
         gender : true,
+        username : true,
       }
-    });
+    }); 
 
     res.status(200).send(user);
 

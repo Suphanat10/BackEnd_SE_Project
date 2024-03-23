@@ -97,12 +97,14 @@ const isStudent = async (req, res, next) => {
 
 const SaveLogs = (log_description) => async (req, res, next) => {
   try {
+   
     await prisma.logs.create({
       data: {
         log_description: log_description,
         user_id: req.user_id,
         ip_address: req.ip,
         timestamp: new Date(),
+
       },
     });
     next();
