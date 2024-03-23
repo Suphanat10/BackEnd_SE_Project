@@ -114,12 +114,41 @@ const SaveLogs = (log_description) => async (req, res, next) => {
   }
 };
 
+const isAdminORisTutor = async (req, res, next) => {
+  try {
+    const user_id = parseInt(req.user_id);
+    const user = await prisma.users_account.findUnique({
+      where: {
+        user_id: user_id,
+      },
+    });
+
+  if(user.permission_id == 1){
+    return res.status(403).send({ message: "Require admin &&  Tutor" });
+  }
+
+    next();
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message,
+      code: 500,
+    });
+  }
+}
+
 const authJwt = {
   verifyToken,
   isAdmin,
   isTutor,
   isStudent,
   SaveLogs,
+  isAdminORisTutor,
 };
 
+
+
 module.exports = authJwt;
+
+
+
+

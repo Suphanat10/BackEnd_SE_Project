@@ -414,7 +414,6 @@ exports.delete_exam = async (req, res) => {
       code: 403,
     });
   }
-  
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -552,7 +551,7 @@ exports.get_exam = async (req, res) => {
     const course_id = parseInt(req.params.course_id);
     const user_id = req.user_id;
 
-    // Find registration_id
+
     const registration = await prisma.course_reg.findFirst({
       where: {
         user_id: user_id,

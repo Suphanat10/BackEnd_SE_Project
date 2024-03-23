@@ -12,21 +12,21 @@ module.exports = function (app) {
 
   app.post(
     "/api/course/createCourse",
-    [authJwt.verifyToken, authJwt.isTutor],
+    [authJwt.verifyToken , authJwt.isAdminORisTutor],
     authJwt.SaveLogs("สร้างคอร์สเรียนใหม่"),
     controller.create
   );
 
   app.post(
     "/api/course/createLesson",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken , authJwt.isAdminORisTutor],
     authJwt.SaveLogs("สร้างบทเรียนใหม่"),
     controller.course_lesson
   );
 
   app.post(
     "/api/course/createContent",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken , authJwt.isAdminORisTutor],
     authJwt.SaveLogs("สร้างเนื้อหาบทเรียนใหม่"),
     controller.course_lesson_content
   );
@@ -48,35 +48,35 @@ module.exports = function (app) {
 //
   app.post(
     "/api/course/updateCourse",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken , authJwt.isAdminORisTutor],
     authJwt.SaveLogs("เเก้ไขคอร์สเรียน"),
     controller.update_course
   );
 
   app.post(
     "/api/course/updateLesson",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken , authJwt.isAdminORisTutor],
     authJwt.SaveLogs("เเก้ไขบทเรียน"),
     controller.update_lesson
   );
 
   app.post(
     "/api/course/updateContent",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken , authJwt.isAdminORisTutor],
     authJwt.SaveLogs("เเก้ไขเนื้อหาบทเรียน"),
     controller.update_content
   );
 
   app.delete(
     "/api/course/delete/course_lesson/:id",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken , authJwt.isAdminORisTutor],
     authJwt.SaveLogs("ลบบทเรียน"),
     controller.delete_course_lesson
   );
 
   app.delete(
     "/api/course/delete/course_content/:id",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken , authJwt.isAdminORisTutor],
     authJwt.SaveLogs("ลบเนื้อหาบทเรียน"),
     controller.delete_content
   );
@@ -115,7 +115,7 @@ module.exports = function (app) {
 
 app.delete(
   "/api/course/deleteCourse/:id",
-  [authJwt.verifyToken],
+  [authJwt.verifyToken , authJwt.isAdminORisTutor],
   authJwt.SaveLogs("ลบคอร์สเรียน"),
   controller.delete_course
 );
