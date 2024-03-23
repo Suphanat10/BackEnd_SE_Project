@@ -39,13 +39,7 @@ exports.update_user = async (req, res) => {
     const email = req.body.email;
     const gender = req.body.gender;
 
-    // user_id: user_id,
-    // prefix: prefix,
-    // first_name: first_name,
-    // last_name: last_name,
-    // email: email,
-    // gender: gender
-
+   
 
     if (!user_id) {
       res.status(400).send({
@@ -84,6 +78,7 @@ exports.update_user = async (req, res) => {
 
 exports.delete_user = async (req, res) => {
   try {
+    // const user_id = parseInt(req.params.user_id);
     const user_id = parseInt(req.params.user_id);
 
     if (!user_id) {
