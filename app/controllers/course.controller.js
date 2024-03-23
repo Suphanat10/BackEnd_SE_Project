@@ -419,6 +419,7 @@ exports.get_course_by_id = async (req, res) => {
 
 
     if(users.permission_id == 2){
+
     if (!course_id) {
       return res.status(400).send({
         message: "Course ID is required!",
@@ -463,7 +464,7 @@ exports.get_course_by_id = async (req, res) => {
       return res.status(404).send([]);
     }
     res.status(200).send(course);
-    }else if(users.permission_id == 2){
+    }else if(users.permission_id == 3){
       if (!course_id) {
         return res.status(400).send({
           message: "Course ID is required!",
