@@ -187,6 +187,8 @@ exports.update_course = async (req, res) => {
     const image = req.body.image;
     const cost = req.body.cost;
     const image_account = req.body.image_account;
+    const user_id = req.user_id;
+
 
     if (!course_id || !course_name || !course_description) {
       return res.status(400).send({
@@ -195,6 +197,8 @@ exports.update_course = async (req, res) => {
         code: 400,
       });
     }
+
+
 
     const existingCourse = await prisma.course.findFirst({
       where: {
@@ -407,8 +411,14 @@ exports.get_course_by_id = async (req, res) => {
     const course_id = parseInt(req.params.id);
     const user_id = req.user_id;
 
-    console.log(course_id, user_id);
+    const  users = await prisma.users_account.findFirst({
+      where: {
+        user_id: user_id,
+      },
+    });
 
+
+    if(users.permission_id == 2){
     if (!course_id) {
       return res.status(400).send({
         message: "Course ID is required!",
@@ -453,6 +463,61 @@ exports.get_course_by_id = async (req, res) => {
       return res.status(404).send([]);
     }
     res.status(200).send(course);
+    }else if(users.permission_id == 2){
+      if (!course_id) {
+        return res.status(400).send({
+          message: "Course ID is required!",
+          code: 400,
+        });
+      }
+  
+      const course = await prisma.course.findFirst({
+        where: {
+          course_id: course_id,
+      
+        },
+        include: {
+          course_lesson: {
+            select: {
+              lesson_name: true,
+              lesson_id: true,
+            },
+          },
+          course_reg: {
+            include: {
+              users_account: {
+                select: {
+                  prefix: true,
+                  first_name: true,
+                  last_name: true,
+                },
+              },
+              users_reg_transfer_document: {
+                select: {
+                  transfer_document: true,
+                  comment: true,
+                  document_id: true,
+                },
+              },
+            },
+          },
+        },
+      });
+  
+      if (!course) {
+        return res.status(404).send([]);
+      }
+      res.status(200).send(course);
+
+
+    }else{
+      return res.status(400).send({
+        message: "permission_id is required!",
+        code: 400,
+      });
+
+    }
+
   } catch (err) {
     res.status(500).send({
       message: err.message,
