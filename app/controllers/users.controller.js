@@ -33,12 +33,18 @@ exports.get_user = async (req, res) => {
 exports.update_user = async (req, res) => {
   try {
     const user_id = req.body.user_id;
-    
     const prefix = req.body.prefix;
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
     const email = req.body.email;
-    const gender = req.body
+    const gender = req.body.gender;
+
+    // user_id: user_id,
+    // prefix: prefix,
+    // first_name: first_name,
+    // last_name: last_name,
+    // email: email,
+    // gender: gender
 
 
     if (!user_id) {
