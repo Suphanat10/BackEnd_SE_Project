@@ -7,6 +7,14 @@ exports.get_course_exam = async (req, res) => {
     const lesson_id = parseInt(req.params.lesson_id);
     const user_id = req.user_id;
 
+    const user = await prisma.users_account.findFirst({
+      where: {
+        user_id: user_id,
+      },
+    });
+
+    if(user.permission_id == 2){
+
     if (!lesson_id) {
       return res.status(400).send({
         message: "Lesson ID is required!",
@@ -30,6 +38,35 @@ exports.get_course_exam = async (req, res) => {
     });
 
     res.status(200).send(exam);
+
+  }else if(user.permission_id == 3){
+    if (!lesson_id) {
+      return res.status(400).send({
+        message: "Lesson ID is required!",
+        code: 400,
+      });
+    }
+    const exam = await prisma.course_exam.findMany({
+      where: {
+        lesson_id: lesson_id,
+      },
+      include: {
+        _count: {
+          select: {
+            course_exam_problem: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).send(exam);
+  }else{
+    res.status(403).send({
+      message: "Permission Denied!",
+      code: 403,
+    });
+  }
+
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -170,7 +207,7 @@ exports.create_exam_question_choice = async (req, res) => {
         }
       }
     }
-    
+
     res.status(200).send({
       message: "Exam questions and choices created successfully!",
       code: 200,

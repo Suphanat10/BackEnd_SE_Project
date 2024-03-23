@@ -38,13 +38,14 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     controller.get_lesson_chapter
   );
+  //
 
   app.get(
     "/api/course/getCourse/course/:id",
     [authJwt.verifyToken],
     controller.get_course_by_id
   );
-
+//
   app.post(
     "/api/course/updateCourse",
     [authJwt.verifyToken],
