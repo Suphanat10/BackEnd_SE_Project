@@ -92,13 +92,14 @@ exports.completed = async (req, res) => {
 
   const update_status = await prisma.course_reg.update({
     where: {
-      registration_id: registration_id,
+      
+      completion_status: registration_id,
     },
     data: {
       registration_status: 1,
     },
   });
-  
+
 
   res.status(200).send({
     message: "Approved completion status",
