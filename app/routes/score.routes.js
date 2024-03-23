@@ -1,8 +1,6 @@
 const controller = require("../controllers/score.controller");
 const { authJwt } = require("../middleware");
 
-
-
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -12,26 +10,16 @@ module.exports = function (app) {
     next();
   });
 
-
-
-
-app.get("/api/course/score/getScore/:registration_id",
+  app.get(
+    "/api/course/score/getScore/:registration_id",
     [authJwt.verifyToken],
-    controller.get_score);
+    controller.get_score
+  );
 
 
 app.post("/api/course/completed",
     [authJwt.verifyToken],
     authJwt.SaveLogs("อนุมัติการจบหลักสูตร"),
-    controller.completed);
-  
-
-
-
-
-
-
-
-
-
+    controller.completed
+  );
 };
