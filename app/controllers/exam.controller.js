@@ -151,107 +151,132 @@ exports.get_course_exam = async (req, res) => {
 exports.create_exam_question_choice = async (req, res) => {
   try {
     const exam = req.body.exam;
+    const exam_id = Number(exam.exam_id);
+    const questions = exam.questions;
 
-    const Exam = await prisma.course_exam_problem.findMany({
+    const find_problem_arr = await prisma.course_exam_problem.findMany({
       where: {
-        exam_id: exam.exam_id,
+        exam_id: exam_id,
+      },
+      include: {
+        course_exam_choices: true,
       },
     });
 
-    console.log(Exam);
-    console.log(Exam.problem_id);
+    // Delete All is not in questions
+    await prisma.course_exam_problem.deleteMany({
+      where: {
+        exam_id: exam_id,
+        problem_id: {
+          notIn: questions
+            .filter((item) => item.problem_id)
+            .map((item) => item.problem_id),
+        },
+      },
+    });
 
-    if (Exam.length > 0) {
-      for await (const question of exam.questions) {
-        await prisma.course_exam_problem.updateMany({
+    for await (let q of questions) {
+      const problem = find_problem_arr.find(
+        (item) => item.problem_id === q.problem_id
+      );
+
+      if (problem) {
+        // Update Problem
+        await prisma.course_exam_problem.update({
           where: {
-            problem_id: question.problem_id,
+            problem_id: q.problem_id,
           },
           data: {
-            problem_name: question.problem_name,
+            problem_name: q.problem_name,
             correct_choice: null,
           },
         });
 
-    
+        // Delete All is not in choices
+        await prisma.course_exam_choices.deleteMany({
+          where: {
+            problem_id: q.problem_id,
+            choices_id: {
+              notIn: q.choices
+                .filter((item) => item.choices_id)
+                .map((item) => item.choices_id),
+            },
+          },
+        });
 
-        await Promise.all(
-          question.choices.map(async (choice) => {
-            await prisma.course_exam_choices.updateMany({
+        let find_correct_choice = null;
+        for await (let [index, choice] of q.choices.entries()) {
+          const find_choice = problem.course_exam_choices.find(
+            (item) => item.choices_id === choice.choices_id
+          );
+
+          if (find_choice) {
+            // Update Choice
+            await prisma.course_exam_choices.update({
               where: {
-                problem_id: question.problem_id,
+                choices_id: choice.choices_id,
               },
               data: {
                 label: choice.label,
               },
             });
-          })
-        );
+            if (index === q.correct_choice) {
+              find_correct_choice = choice.choices_id;
+            }
+          } else {
+            // Create Choice
+            const create_choice = await prisma.course_exam_choices.create({
+              data: {
+                problem_id: q.problem_id,
+                label: choice.label,
+              },
+            });
 
-        const choiceIds = await prisma.course_exam_choices.findMany({
-          where: {
-            problem_id: question.problem_id,
-          },
-          select: {
-            choices_id: true,
-          },
-        });
+            if (index === q.correct_choice) {
+              find_correct_choice = create_choice.choices_id;
+            }
+          }
+        }
 
-        const choiceIdsArray = choiceIds.map((choice) => choice.choices_id);
-
+        // Update correct_choice
         await prisma.course_exam_problem.update({
           where: {
-            problem_id: question.problem_id,
+            problem_id: q.problem_id,
           },
           data: {
-            correct_choice: choiceIdsArray[question.correct_choice],
+            correct_choice: find_correct_choice,
           },
         });
+      } else {
+        // Create Problem
+        const createProblem = await prisma.course_exam_problem.create({
+          data: {
+            problem_name: q.problem_name,
+            exam_id: exam_id,
+            correct_choice: null,
+          },
+        });
+
+        for await (let [index, choice] of q.choices.entries()) {
+          const create_choice = await prisma.course_exam_choices.create({
+            data: {
+              problem_id: createProblem.problem_id,
+              label: choice.label,
+            },
+          });
+
+          if (index === q.correct_choice) {
+            await prisma.course_exam_problem.update({
+              where: {
+                problem_id: createProblem.problem_id,
+              },
+              data: {
+                correct_choice: create_choice.choices_id,
+              },
+            });
+          }
+        }
       }
-
-      return res.status(200).send({
-        message: "Exam questions and choices created successfully!",
-        code: 200,
-      });
-    }
-
-    for await (const question of exam.questions) {
-      const createQuestion = await prisma.course_exam_problem.create({
-        data: {
-          problem_name: question.problem_name,
-          exam_id: exam.exam_id,
-          correct_choice: null,
-        },
-      });
-
-      const createChoices = await prisma.course_exam_choices.createMany({
-        data: question.choices.map((choice) => {
-          return {
-            problem_id: createQuestion.problem_id,
-            label: choice.label,
-          };
-        }),
-      });
-
-      const choiceIds = await prisma.course_exam_choices.findMany({
-        where: {
-          problem_id: createQuestion.problem_id,
-        },
-        select: {
-          choices_id: true,
-        },
-      });
-
-      const choiceIdsArray = choiceIds.map((choice) => choice.choices_id);
-
-      await prisma.course_exam_problem.update({
-        where: {
-          problem_id: createQuestion.problem_id,
-        },
-        data: {
-          correct_choice: choiceIdsArray[question.correct_choice],
-        },
-      });
     }
 
     res.status(200).send({
