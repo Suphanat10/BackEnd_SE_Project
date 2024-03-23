@@ -368,6 +368,15 @@ exports.create_course_exam = async (req, res) => {
 exports.delete_exam = async (req, res) => {
   try {
     const exam_id = parseInt(req.params.exam_id);
+    const  user_id = req.user_id;
+
+    const user = await prisma.users_account.findFirst({
+      where: {
+        user_id: user_id,
+      },
+    });
+
+    if(user.permission_id == 2 || user.permission_id == 3){
 
     if (!exam_id) {
       return res.status(400).send({
@@ -399,6 +408,13 @@ exports.delete_exam = async (req, res) => {
       message: "Exam was deleted successfully!",
       code: 200,
     });
+  }else{
+    res.status(403).send({
+      message: "Permission Denied!",
+      code: 403,
+    });
+  }
+  
   } catch (err) {
     res.status(500).send({
       message: err.message,
