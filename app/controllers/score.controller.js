@@ -79,6 +79,7 @@ exports.get_score = async (req, res) => {
 
 exports.completed = async (req, res) => {
   try{
+    
    const registration_id  = req.body.registration_id;
 
   const update_status = await prisma.course_reg.update({
@@ -94,6 +95,9 @@ exports.completed = async (req, res) => {
     message: "Approved completion status",
     code: 200,
   });
+
+
+  
 
 }
 catch (err) {
