@@ -26,7 +26,7 @@ const imageFilter = (req, file, cb) => {
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, __basedir + "Image/course");
+    cb(null, __basedir + "image/course");
   },
   filename: (req, file, cb) => {
     if (file.originalname) {
