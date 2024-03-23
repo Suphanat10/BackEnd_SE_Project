@@ -738,6 +738,14 @@ exports.get_lesson_chapter = async (req, res) => {
     const lesson_id = parseInt(req.params.id);
     const user_id = req.user_id;
 
+    const user = await prisma.users_account.findFirst({
+      where: {
+        user_id: user_id,
+      },
+    });
+
+    if (user.permission_id == 2) {
+
     if (!lesson_id) {
       return res.status(400).send({
         message: "Course ID is required!",
@@ -766,8 +774,43 @@ exports.get_lesson_chapter = async (req, res) => {
     if (!content) {
       return res.status(404).send([]);
     }
-
     res.status(200).send(content);
+  }else if(user.permission_id == 3){
+    if (!lesson_id) {
+      return res.status(400).send({
+        message: "Course ID is required!",
+        code: 400,
+      });
+    }
+    const content = await prisma.course_lesson.findFirst({
+      where: {
+        lesson_id: lesson_id,
+    
+      },
+      include: {
+        lesson_chapter: {
+          select: {
+            lesson_chapter_id: true,
+            content_data: true,
+            content_type: true,
+            content_name: true,
+          },
+        },
+      },
+    });
+
+    if (!content) {
+      return res.status(404).send([]);
+    }
+    res.status(200).send(content);
+
+
+  }else{
+    return res.status(400).send({
+      message: "permission_id is required!",
+      code: 400,
+    });
+  }
   } catch (e) {
     res.status(500).send({
       message: e.message,
@@ -874,7 +917,16 @@ exports.get_course_lesson = async (req, res) => {
 exports.get_course_lesson_by_course_id = async (req, res) => {
   try {
     const course_id = parseInt(req.params.course_id);
+    const user_id = req.user_id;
 
+
+    const  user = await prisma.users_account.findFirst({  
+      where: {
+        user_id: user_id,
+      },
+    });
+
+    if(user.permission_id == 2){
     if (!course_id) {
       return res.status(400).send({
         message: "Course ID is required!",
@@ -904,8 +956,45 @@ exports.get_course_lesson_by_course_id = async (req, res) => {
     if (!course) {
       return res.status(404).send([]);
     }
-
     res.status(200).send(course);
+  }else if(user.permission_id == 3){
+    if (!course_id) {
+      return res.status(400).send({
+        message: "Course ID is required!",
+        code: 400,
+      });
+    }
+
+    const course = await prisma.course.findFirst({
+      where: {
+        course_id: course_id,
+      },
+      include: {
+        course_lesson: {
+          select: {
+            lesson_name: true,
+            lesson_id: true,
+            _count: {
+              select: {
+                lesson_chapter: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!course) {
+      return res.status(404).send([]);
+    }
+    res.status(200).send(course);
+  }else{
+    res.status(400).send({
+      message: "permission_id is required!",
+      code: 400,
+    });
+  }
+
   } catch (err) {
     res.status(500).send({
       message: err.message,
