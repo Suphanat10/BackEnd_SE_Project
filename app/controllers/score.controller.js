@@ -79,15 +79,23 @@ exports.get_score = async (req, res) => {
 
 exports.completed = async (req, res) => {
   try{
-    
+
    const registration_id  = req.body.registration_id;
+
+   if(!registration_id){
+    res.status(400).send({
+      message: "registration_id is required",
+      code: 400,
+    });
+    return;
+   }
 
   const update_status = await prisma.course_reg.update({
     where: {
       registration_id: registration_id,
     },
     data: {
-      registration_status: 2,
+      registration_status: 1,
     },
   });
 

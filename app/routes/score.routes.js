@@ -20,7 +20,7 @@ app.get("/api/course/score/getScore/:registration_id",
     controller.get_score);
 
 
-app.post("/api/course/completed ",
+app.post("/api/course/completed",
     [authJwt.verifyToken],
     authJwt.SaveLogs("อนุมัติการจบหลักสูตร"),
     controller.completed);
