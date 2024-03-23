@@ -92,11 +92,11 @@ exports.completed = async (req, res) => {
 
   const update_status = await prisma.course_reg.update({
     where: {
-      
-      completion_status: registration_id,
+
+      registration_id: registration_id,
     },
     data: {
-      registration_status: 1,
+      completion_status: 1,
     },
   });
 
