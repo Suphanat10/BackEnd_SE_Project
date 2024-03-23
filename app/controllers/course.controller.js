@@ -836,8 +836,36 @@ exports.get_course_lesson = async (req, res) => {
         user_id: user_id,
       },
     });
+    if(user.permission_id == 1){
+      const existingCourse = await prisma.course.findFirst({
+        where: {
+          course_id: course_id,
+        },
+      });
+  
+      if (!existingCourse) {
+        return res.status(404).send({
+          message: "Course is not found!",
+          code: 404,
+        });
+      }
+  
+      const courseLesson = await prisma.course_lesson.findMany({
+        where: {
+          course_id: course_id,
+        },
+        include: {
+          _count: {
+            select: {
+              lesson_chapter: true,
+            },
+          },
+        },
+      });
+  
+      res.status(200).send({ courseLesson });
 
-    if(user.permission_id == 2){
+    }else if(user.permission_id == 2){
     const existingCourse = await prisma.course.findFirst({
       where: {
         course_id: course_id,

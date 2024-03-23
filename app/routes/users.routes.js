@@ -12,7 +12,9 @@ module.exports = function (app) {
     next();
   });
 
- app.get("/api/users/registration/:id", controller.get_user_registration);
+ app.get("/api/users/getUser", 
+//  [authJwt.verifyToken],
+  controller.get_user);
 
 
 

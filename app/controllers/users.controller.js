@@ -2,38 +2,25 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 
-exports.get_user_registration = async (req, res) => {
+exports.get_user = async (req, res) => {
   try {
-    const course_id = parseInt(req.params.id);
-
-    if (!course_id) {
-      res.status(400).send({
-        message: "Course ID is required"
-      });
-      return;
-    }
-
-    const user_reg = await prisma.course_reg.findMany({
+    const  user = await prisma.users_account.findMany({
       select: {
-        course_id: true,
-        course: {
-          select: {
-            course_name: true
-          }
-        },
-        users_account: {
-          select: {
-            prefix: true,
-            first_name: true,
-            last_name: true,
-          }
-        }
-      },
-      where: {
-        course_id: course_id
+        user_id: true,
+        prefix: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        image: true,
+        permission_id: true,
+        gender : true,
       }
     });
 
+    res.status(200).send(user);
+
+
+  
   }
   catch (error) {
     res.status(500).send({
