@@ -107,6 +107,75 @@ exports.delete_user = async (req, res) => {
   }
 }
 
+exports.create_user = async (req, res) => {
+  try {
+    const password = req.body.password;
+    const username = req.body.username;
+    const prefix = req.body.prefix;
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
+    const email = req.body.email;
+    const gender = req.body.gender;
+    const permission_id = 3;
+
+    if (
+      !password ||
+      !username ||
+      !prefix ||
+      !first_name ||
+      !last_name ||
+      !email ||
+      !permission_id ||
+      !gender
+    ) {
+      return res.status(403).send({
+        message: "All field is required!",
+        code: 403,
+      });
+    }
+
+    const checkUsername = await prisma.users_account.findUnique({
+      where: {
+        username: username,
+      },
+    });
+
+    if (checkUsername) {
+      return res.status(403).send({
+        message: "Username is already in use!",
+        code: 403,
+      });
+    }
+
+    const createUser = await prisma.users_account.create({
+      data: {
+        prefix: prefix,
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        username: username,
+        password: bcrypt.hashSync(password, 8),
+        permission_id: permission_id,
+        gender: gender,
+      },
+    });
+
+
+    res.status(200).send({
+      message: "User registered successfully",
+      code: 200,
+    });
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while creating the User.",
+      code: 500,
+    });
+  }
+};
+
+
+
 
 
  

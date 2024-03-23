@@ -28,6 +28,13 @@ module.exports = function (app) {
   controller.delete_user);  
 
 
+  app.post("/api/users/createUser",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  authJwt.SaveLogs("สร้างผู้ใช้โดย admin"),
+  controller.create_user);
+  
+
+
 
   
   
