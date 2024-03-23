@@ -367,7 +367,7 @@ exports.Forgot_password = async (req, res) => {
         <td>&nbsp;</td>
         <td class="container">
           <div class="content">
-  
+
             <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="main">
   
               <!-- START MAIN CONTENT AREA -->
@@ -425,7 +425,7 @@ exports.Forgot_password = async (req, res) => {
     });
   } catch (err) {
     res.status(500).send({
-      message: err.message ,
+      message: "User Not found.",
       code: 500,
     });
   }
