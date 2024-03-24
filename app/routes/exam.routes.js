@@ -65,8 +65,8 @@ module.exports = function (app) {
 
   app.post(
     "/api/course/exam/submitAnswer",
-    [authJwt.verifyToken , authJwt.isAdminORisTutor],
-    authJwt.SaveLogs("เเก้ไขคำถามเเละคำตอบ"),
+    [authJwt.verifyToken , authJwt.isStudent],
+    authJwt.SaveLogs("ทำเเบบทดสอบ"),
     controller.do_Exam
   );
 };
