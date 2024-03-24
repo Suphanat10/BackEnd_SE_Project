@@ -117,7 +117,7 @@ exports.login_by_google = async (req, res) => {
       })
       .send({
         id: user.user_id,
-        name: user.prefix + " " + user.first_name + " " + user.last_name,
+        name: user.prefix + user.first_name + " " + user.last_name,
         email: user.email,
         gender: user.gender,
         permission: user.permission_id,
@@ -182,7 +182,7 @@ exports.login = async (req, res) => {
       })
       .send({
         id: user.user_id,
-        name: user.prefix + " " + user.first_name + " " + user.last_name,
+        name: user.prefix + user.first_name + " " + user.last_name,
         email: user.email,
         gender: user.gender,
         permission: user.permission_id,
@@ -255,6 +255,21 @@ exports.register = async (req, res) => {
       });
     }
 
+    const checkEmail = await prisma.users_account.findUnique({
+      where: {
+        email: email,
+      },
+
+    });
+
+    if (checkEmail) {
+      return res.status(403).send({
+        message: "Email is already in use!",
+        code: 403,
+      });
+    }
+
+
     const createUser = await prisma.users_account.create({
       data: {
         prefix: prefix,
@@ -283,12 +298,7 @@ exports.register = async (req, res) => {
       .send({
         message: "User was registered successfully!",
         id: createUser.user_id,
-        name:
-          createUser.prefix +
-          " " +
-          createUser.first_name +
-          " " +
-          createUser.last_name,
+        name:createUser.prefix  + createUser.first_name + " " +createUser.last_name,
         email: createUser.email,
         gender: createUser.gender,
         permission: createUser.permission_id,
@@ -727,9 +737,6 @@ exports.Forgot_password = async (req, res) => {
       </html>
       `,      
       
-   
-
-      // text: `Your new password is ${randomPassword}`,
     }, (err, info) => {
       if (err) {
           console.log(err);
