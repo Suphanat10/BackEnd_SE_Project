@@ -9,7 +9,6 @@ const nodemailer = require("nodemailer");
 exports.delete_google = async (req, res) => {
   try {
     const user_id = req.user_id;
-
     const updateUser = await prisma.users_account.update({
       where: {
         user_id: user_id,
@@ -34,8 +33,7 @@ exports.delete_google = async (req, res) => {
     });
   } catch (err) {
     res.status(500).send({
-      message:
-        err.message || "Some error occurred while delete the Google Account.",
+      message: "Some error occurred while delete the Google Account.",
       code: 500,
     });
   }
@@ -54,6 +52,34 @@ exports.register_by_google = async (req, res) => {
       });
     }
 
+    if (!email) {
+      return res.status(403).send({
+        message: "Email is required!",
+        code: 403,
+      });
+    }
+
+    const checkGoogleId = await prisma.users_account.findFirst({
+      where: {
+        google_id: google_id,
+      },
+    });
+
+    if (checkGoogleId) {
+      return res.status(403).send({
+        message: "Google ID is already in use!",
+        code: 403,
+      });
+    }
+
+    const checkEmail = await prisma.users_account.findFirst({
+      where: {
+        email: email,
+        user_id: user_id,
+      },
+    });
+
+    if (!checkEmail) {
     const updateUser = await prisma.users_account.update({
       where: {
         user_id: user_id,
@@ -63,11 +89,22 @@ exports.register_by_google = async (req, res) => {
         email: email,
       },
     });
-
+  } else {
+    const updateUser = await prisma.users_account.update({
+      where: {
+        user_id: user_id,
+      },
+      data: {
+        google_id: google_id,
+      },
+    });
+  }
+  
     res.status(200).send({
       message: "Google Account was registered successfully!",
       code: 200,
     });
+    
     const currentDate = new Date();
       const sevenHoursAheadDate = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
     const saveLogs = await prisma.logs.create({
@@ -80,7 +117,7 @@ exports.register_by_google = async (req, res) => {
     });
   } catch (err) {
     res.status(500).send({
-      message: err.message || "Some error occurred while register the User.",
+      message: "Some error occurred while register the User.",
       code: 500,
     });
   }
@@ -703,7 +740,7 @@ exports.Forgot_password = async (req, res) => {
                     <td class="wrapper">
                       <p><b>เปลี่ยนรหัสผ่าน</b></p>
                       <p>
-                        คูณได้ทำการรีเซ็ตรหัสผ่านของคุณ<br>
+                        คุณได้ทำการรีเซ็ตรหัสผ่านของคุณ<br>
                         รหัสผ่านใหม่ของคุณคือ <b>${randomPassword}</b>
                       </p>
                     
