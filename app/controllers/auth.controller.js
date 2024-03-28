@@ -72,14 +72,8 @@ exports.register_by_google = async (req, res) => {
       });
     }
 
-    const checkEmail = await prisma.users_account.findFirst({
-      where: {
-        email: email,
-        user_id: user_id,
-      },
-    });
+   
 
-    if (!checkEmail) {
     const updateUser = await prisma.users_account.update({
       where: {
         user_id: user_id,
@@ -88,25 +82,15 @@ exports.register_by_google = async (req, res) => {
         google_id: google_id,
         email: email,
       },
+
     });
-  } else {
-    const updateUser = await prisma.users_account.update({
-      where: {
-        user_id: user_id,
-      },
-      data: {
-        google_id: google_id,
-      },
-    });
-  }
-  
     res.status(200).send({
       message: "Google Account was registered successfully!",
       code: 200,
     });
     
     const currentDate = new Date();
-      const sevenHoursAheadDate = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
+    const sevenHoursAheadDate = new Date(currentDate.getTime() + (7 * 60 * 60 * 1000));
     const saveLogs = await prisma.logs.create({
       data: {
         log_description: "การเชื่อต่อ Google Account",
@@ -116,9 +100,9 @@ exports.register_by_google = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).send({
-      message: "Some error occurred while register the User.",
-      code: 500,
+    res.status(403).send({
+              message: "Email is already in use!",
+      code: 403,
     });
   }
 };
