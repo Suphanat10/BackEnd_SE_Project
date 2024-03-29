@@ -179,12 +179,48 @@ exports.updateProfile = async (req, res) => {
       },
     });
 
+
     if (!user) {
       return res.status(404).send({
         message: "User Not found.",
         code: 404,
       });
     }
+
+
+ const checkEmail = await prisma.users_account.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+
+
+    if (checkEmail && checkEmail.user_id != user_id) {
+      return res.status(400).send({
+        message: "Email is already in use!",
+        code: 400,
+      });
+    }
+
+    
+
+
+    // if(user.email != email){
+    //   const checkEmail = await prisma.users_account.findUnique({
+    //     where: {
+    //       email: email,
+    //     },
+    //   });
+  
+    //   if (checkEmail) {
+    //     return res.status(400).send({
+    //       message: "Email is already in use!",
+    //       code: 400,
+    //     });
+    //   }
+    // }
+
 
     const updateUser = await prisma.users_account.update({
       where: {
