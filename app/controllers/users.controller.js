@@ -49,7 +49,21 @@ exports.update_user = async (req, res) => {
       return;
     }
 
+    const checkEmail = await prisma.users_account.findUnique({
+      where: {
+        email: email,
+      },
+    });
 
+
+    if (checkEmail && checkEmail.user_id != user_id) {
+      return res.status(400).send({
+        message: "Email is already in use!",
+        code: 400,
+      });
+    }
+
+    
   const  update_user = await prisma.users_account.update({
     where: {
       user_id: user_id
@@ -146,6 +160,22 @@ exports.create_user = async (req, res) => {
         code: 403,
       });
     }
+
+    const checkEmail = await prisma.users_account.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+
+    if(checkEmail){
+      return res.status(403).send({
+        message: "Email is already in use!",
+        code: 403,
+      });
+
+    }
+
 
     const createUser = await prisma.users_account.create({
       data: {

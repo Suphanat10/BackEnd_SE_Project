@@ -206,22 +206,6 @@ exports.updateProfile = async (req, res) => {
     
 
 
-    // if(user.email != email){
-    //   const checkEmail = await prisma.users_account.findUnique({
-    //     where: {
-    //       email: email,
-    //     },
-    //   });
-  
-    //   if (checkEmail) {
-    //     return res.status(400).send({
-    //       message: "Email is already in use!",
-    //       code: 400,
-    //     });
-    //   }
-    // }
-
-
     const updateUser = await prisma.users_account.update({
       where: {
         user_id: user_id,
