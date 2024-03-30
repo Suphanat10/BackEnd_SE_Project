@@ -67,13 +67,12 @@ exports.register_by_google = async (req, res) => {
 
     if (checkGoogleId) {
       return res.status(403).send({
-        message: "Google ID is already in use!",
+        message: "บัญชี Google นี้ถูกใช้งานแล้ว!",
         code: 403,
       });
     }
 
-   
-
+  
     const updateUser = await prisma.users_account.update({
       where: {
         user_id: user_id,
@@ -101,8 +100,9 @@ exports.register_by_google = async (req, res) => {
     });
   } catch (err) {
     res.status(403).send({
-              message: "Email is already in use!",
+      message: "Some error occurred while register the Google Account.",
       code: 403,
+      
     });
   }
 };
@@ -119,7 +119,7 @@ exports.login_by_google = async (req, res) => {
 
     if (!user) {
       return res.status(404).send({
-        message: "User Not found.",
+        message: "ไม่พบผู้ใช้งาน",
         code: 404,
       });
     }
@@ -156,7 +156,7 @@ exports.login_by_google = async (req, res) => {
     });
   } catch (err) {
     res.status(500).send({
-      message: err.message || "Some error occurred while login the User.",
+      message: "Some error occurred while login the User.",
       code: 500,
     });
   }
@@ -174,7 +174,7 @@ exports.login = async (req, res) => {
     });
     if (!user) {
       return res.status(404).send({
-        message: "User Not found.",
+        message: "ไม่พบผู้ใช้งาน",
         code: 404,
       });
     }
@@ -221,7 +221,7 @@ exports.login = async (req, res) => {
     });
   } catch (err) {
     res.status(500).send({
-      message: err.message || "Some error occurred while login the User.",
+      message:  "Some error occurred while login the User.",
       code: 500,
     });
   }
@@ -271,7 +271,7 @@ exports.register = async (req, res) => {
 
     if (checkUsername) {
       return res.status(403).send({
-        message: "Username is already in use!",
+        message: "ผุ้ใช้งานนี้ถูกใช้งานแล้ว!",
         code: 403,
       });
     }
@@ -285,7 +285,7 @@ exports.register = async (req, res) => {
 
     if (checkEmail) {
       return res.status(403).send({
-        message: "Email is already in use!",
+        message: "อีเมล์นี้ถูกใช้งานแล้ว!",
         code: 403,
       });
     }
@@ -337,7 +337,7 @@ exports.register = async (req, res) => {
     });
   } catch (err) {
     res.status(500).send({
-      message: err.message || "Some error occurred while creating the User.",
+      message: "Some error occurred while creating the User.",
       code: 500,
     });
   }
@@ -782,7 +782,7 @@ exports.Forgot_password = async (req, res) => {
     });
   } catch (err) {
     res.status(500).send({
-      message: "User Not found.",
+      message: "Some error occurred while sending email.",
       code: 500,
     });
   }

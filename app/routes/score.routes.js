@@ -18,7 +18,7 @@ module.exports = function (app) {
 
 
 app.post("/api/course/completed",
-    [authJwt.verifyToken],
+[authJwt.verifyToken , authJwt.isAdminORisTutor],
     authJwt.SaveLogs("อนุมัติการจบหลักสูตร"),
     controller.completed
   );

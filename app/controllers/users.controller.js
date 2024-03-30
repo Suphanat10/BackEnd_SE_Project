@@ -58,7 +58,7 @@ exports.update_user = async (req, res) => {
 
     if (checkEmail && checkEmail.user_id != user_id) {
       return res.status(400).send({
-        message: "Email is already in use!",
+        message: "อีเมล์นี้ถูกใช้งานแล้ว!",
         code: 400,
       });
     }
@@ -156,7 +156,7 @@ exports.create_user = async (req, res) => {
 
     if (checkUsername) {
       return res.status(403).send({
-        message: "Username is already in use!",
+        message: "ชื่อผู้ใช้งานนี้ถูกใช้งานแล้ว!",
         code: 403,
       });
     }
@@ -170,7 +170,7 @@ exports.create_user = async (req, res) => {
 
     if(checkEmail){
       return res.status(403).send({
-        message: "Email is already in use!",
+        message: "อีเมล์นี้ถูกใช้งานแล้ว!",
         code: 403,
       });
 

@@ -7,6 +7,7 @@ var jwt = require("jsonwebtoken");
 exports.getProfile = async (req, res) => {
   try {
     const user_id = req.user_id;
+    
     const user = await prisma.users_account.findUnique({
       where: {
         user_id: user_id,
