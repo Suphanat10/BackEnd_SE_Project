@@ -173,23 +173,6 @@ exports.completed = async (req, res) => {
 
 
 
-
-
-
-      //     lesson_arr.map((lesson) => {
-      //       lesson.course_exam.map((exam) => {
-      //         sum_score += exam.sum_Score;
-      //         total_score += exam.total_problems;
-      //       });
-
-      //       let score = (sum_score / total_score) * 100;
-      //       if(score < 60){
-      //         pass = false;
-      //         break;
-      //       }
-      //     }
-      // );
-
       for (const lesson of lesson_arr) {
         let sum_score = 0;
         let total_score = 0;
